@@ -1,9 +1,17 @@
-export default function Dashboard() {
-    return (
-        <div className='flex flex-col gap-4'>
-            <h1 className='text-2xl font-bold'>Dashboard</h1>
-            <p>Welcome to the dashboard!</p>
-        </div>
-    )
+import accountApiRequest from '@/apiRequests/account'
+import { cookies } from 'next/headers'
+
+export default async function Dashboard() {
+  const cookieStore =  await cookies()
+  const accessToken = cookieStore.get('accessToken')?.value!
+  let name = ''
+  try {
+    const result = await accountApiRequest.sMe(accessToken)
+    name = result.payload.data.name
+  } catch (error: any) {
+    if (error.digest?.includes('NEXT_REDIRECT')) {
+      throw error
+    }
+  }
+  return <div>Dashboard {name}</div>
 }
-//     )

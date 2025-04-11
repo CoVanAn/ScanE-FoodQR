@@ -1,11 +1,16 @@
 'use client'
 
+import { useAppContext } from '@/components/app-provider'
 import { getAccessTokenFromLocalStorage } from '@/lib/utils'
 import Link from 'next/link'
 import { useEffect, useState } from 'react'
 import { set } from 'zod'
 
 const menuItems = [
+  {
+    title: 'Trang chủ',
+    href: '/'
+  },
   {
     title: 'Món ăn',
     href: '/menu'
@@ -28,10 +33,10 @@ const menuItems = [
 ]
 
 export default function NavItems({ className }: { className?: string }) {
-  const [isAuth, setIsAuth] = useState(false)
-  useEffect(() => {
-    setIsAuth(Boolean(getAccessTokenFromLocalStorage()))
-  }, [])
+  const {isAuth} = useAppContext()
+  // useEffect(() => {
+  //   setIsAuth(Boolean(getAccessTokenFromLocalStorage()))
+  // }, [])
   return menuItems.map((item) => {
     if(item.authRequired === false && isAuth || item.authRequired === true && !isAuth) {
       return null
