@@ -43,7 +43,7 @@ export default function UpdateProfileForm() {
       })
     }
   }, [form, data])
-  // Nếu các bạn dùng Next.js 15 (tức React 19) thì không cần dùng useMemo chỗ này
+  // Nếu  dùng Next.js 15 (tức React 19) thì không cần dùng useMemo chỗ này
   const previewAvatar = file ? URL.createObjectURL(file) : avatar
   // const previewAvatar = useMemo(() => {
   //   if (file) {

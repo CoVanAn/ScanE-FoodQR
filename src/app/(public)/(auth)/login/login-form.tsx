@@ -66,7 +66,7 @@ export default function LoginForm() {
     <Card className='mx-auto max-w-sm'>
       <CardHeader>
         <CardTitle className='text-2xl'>Đăng nhập</CardTitle>
-        <CardDescription>Nhập email và mật khẩu của bạn để đăng nhập vào hệ thống</CardDescription>
+        <CardDescription>Nhập email và mật khẩu  để đăng nhập vào hệ thống</CardDescription>
       </CardHeader>
       <CardContent>
         <Form {...form}>

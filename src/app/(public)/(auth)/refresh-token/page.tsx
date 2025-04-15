@@ -31,6 +31,11 @@ function RefreshToken() {
 
 export default function RefreshTokenPage() {
   return (
+    //Suppense is used to show a fallback UI while the component is loading
+    //This is useful when the component is loading data or performing some async operation
+    //In this case, we are using it to show a loading message while the RefreshToken component is loading
+    //You can replace the fallback with a loading spinner or any other UI you want
+    //to show while the component is loading
     <Suspense fallback={<div>Loading...</div>}>
       <RefreshToken />
     </Suspense>

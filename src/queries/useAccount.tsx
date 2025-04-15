@@ -40,6 +40,7 @@ export const useGetAccount = ({
 }) => {
   return useQuery({
     queryKey: ['accounts', id],
+    //Truyền function vào queryFn để tránh việc gọi api khi chưa có id
     queryFn: () => accountApiRequest.getEmployee(id),
     enabled
   })
@@ -50,6 +51,7 @@ export const useAddAccountMutation = () => {
   return useMutation({
     mutationFn: accountApiRequest.addEmployee,
     onSuccess: () => {
+      //Gọi lại api lấy danh sách tài khoản sau khi thêm tài khoản mới (invalidate query)
       queryClient.invalidateQueries({
         queryKey: ['accounts']
       })

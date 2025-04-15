@@ -6,7 +6,7 @@ export default function Home() {
       <div className='relative'>
         <span className='absolute top-0 left-0 w-full h-full bg-black opacity-50 z-10'></span>
         <Image
-          src='/banner.png'
+          src='/banner.jpg'
           width={400}
           height={200}
           quality={100}
