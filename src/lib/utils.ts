@@ -8,6 +8,7 @@ import guestApiRequest from '@/apiRequests/guest'
 import authApiRequest from '@/apiRequests/auth'
 import jwt from 'jsonwebtoken'
 import { TokenPayload } from "@/types/jwt.types"
+import envConfig from "@/config"
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
@@ -168,4 +169,17 @@ export const getVietnameseTableStatus = (
     default:
       return 'Ẩn'
   }
+}
+
+
+export const getTableLink = ({
+  token,
+  tableNumber
+}: {
+  token: string
+  tableNumber: number
+}) => {
+  return (
+    envConfig.NEXT_PUBLIC_URL + '/tables/' + tableNumber + '?token=' + token
+  )
 }
