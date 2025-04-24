@@ -19,7 +19,7 @@ export default function LoginForm() {
   const router = useRouter()
   const loginMutation = useLoginMutation()
   const searchParams = useSearchParams()
-  const {setIsAuth} = useAppContext()
+  const {setRole} = useAppContext()
   const clearToken = searchParams.get('clearToken')
   const form = useForm<LoginBodyType>({
     resolver: zodResolver(LoginBody),
@@ -31,9 +31,9 @@ export default function LoginForm() {
 
   useEffect(() => {
     if (clearToken) {
-      setIsAuth(false)
+      setRole()
     }
-  }, [clearToken, setIsAuth])
+  }, [clearToken, setRole])
 
   const onSubmit = async (data: LoginBodyType) => {
     //Khi nhấn submit thì React hook form sẽ tự động gọi hàm onSubmit
@@ -47,7 +47,7 @@ export default function LoginForm() {
           onClick: () => console.log("Undo"),
         },
       })
-      setIsAuth(true)
+      setRole(result.payload.data.account.role)
       router.push('/manage/dashboard')
     }
     catch (error: any) {

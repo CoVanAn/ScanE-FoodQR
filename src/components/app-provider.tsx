@@ -1,6 +1,7 @@
 'use client'
 
-import { getAccessTokenFromLocalStorage, removeTokensFromLocalStorage } from '@/lib/utils'
+import { decodeToken, getAccessTokenFromLocalStorage, removeTokensFromLocalStorage } from '@/lib/utils'
+import { RoleType } from '@/types/jwt.types'
 import {
     useQuery,
     useMutation,
@@ -30,7 +31,8 @@ const queryClient = new QueryClient(
 
 const AppContext = createContext({
     isAuth: false,
-    setIsAuth: (isAuth: boolean) => { },
+    role: undefined as RoleType | undefined,
+    setRole: (role?: RoleType | undefined) => { },
 })
 
 export const useAppContext = () => {
@@ -40,28 +42,27 @@ export const useAppContext = () => {
 export default function AppProvider({ children }: Readonly<{
     children: React.ReactNode
 }>) {
-    const [isAuth, setIsAuthState] = useState(false)
+    const [role, setRoleState] = useState<RoleType | undefined>()
     useEffect(() => {
         const accessToken = getAccessTokenFromLocalStorage()
         if (accessToken) {
-            setIsAuthState(true)
+            const role = decodeToken(accessToken).role
+            setRoleState(role)
         }
     }, [])
 
     //Nếu dùng react 19 và next 15 thì ko cần dùng useCallBack đoạn này cx đc
-    const setIsAuth = (isAuth: boolean) => {
-        if (isAuth) {
-            setIsAuthState(true)
-        }
-        else {
-            setIsAuthState(false)
-            removeTokensFromLocalStorage()
+    const setRole = (role?: RoleType | undefined) => {
+        setRoleState(role)
+        if (!role) {
+          removeTokensFromLocalStorage()
         }
     }
+    const isAuth = Boolean(role)
     //Nếu dùng react 19 và next 15 thì ko cần appcontext.provider, chỉ cần appcontext là đủ
     return (
         <AppContext value={{
-            isAuth, setIsAuth
+            role, setRole, isAuth
         }}>
             <QueryClientProvider client={queryClient}>
                 {children}

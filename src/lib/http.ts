@@ -1,5 +1,11 @@
 import envConfig from '@/config'
-import { normalizePath } from '@/lib/utils'
+import {
+  getAccessTokenFromLocalStorage,
+  normalizePath,
+  removeTokensFromLocalStorage,
+  setAccessTokenToLocalStorage,
+  setRefreshTokenToLocalStorage
+} from '@/lib/utils'
 import { LoginResType } from '@/schemaValidations/auth.schema'
 import { redirect } from 'next/navigation'
 
@@ -24,7 +30,15 @@ export class HttpError extends Error {
     message: string
     [key: string]: any
   }
-  constructor({ status, payload, message= "Lỗi http" }: { status: number; payload: any, message?: string }) {
+  constructor({
+    status,
+    payload,
+    message = 'Lỗi HTTP'
+  }: {
+    status: number
+    payload: any
+    message?: string
+  }) {
     super(message)
     this.status = status
     this.payload = payload
@@ -49,6 +63,9 @@ export class EntityError extends HttpError {
 
 let clientLogoutRequest: null | Promise<any> = null
 const isClient = typeof window !== 'undefined'
+
+
+
 const request = async <Response>(
   method: 'GET' | 'POST' | 'PUT' | 'DELETE',
   url: string,
@@ -66,10 +83,10 @@ const request = async <Response>(
     body instanceof FormData
       ? {}
       : {
-          'Content-Type': 'application/json'
-        }
+        'Content-Type': 'application/json'
+      }
   if (isClient) {
-    const accessToken = localStorage.getItem('accessToken')
+    const accessToken = getAccessTokenFromLocalStorage()
     if (accessToken) {
       baseHeaders.Authorization = `Bearer ${accessToken}`
     }
@@ -83,7 +100,6 @@ const request = async <Response>(
       : options.baseUrl
 
   const fullUrl = `${baseUrl}/${normalizePath(url)}`
-
   const res = await fetch(fullUrl, {
     ...options,
     headers: {
@@ -112,7 +128,7 @@ const request = async <Response>(
         if (!clientLogoutRequest) {
           clientLogoutRequest = fetch('/api/auth/logout', {
             method: 'POST',
-            body: null, //Logout mình sẽ cho phép luôn thành công JSON.stringify({ force: true }),
+            body: null, // Logout mình sẽ cho phép luôn luôn thành công
             headers: {
               ...baseHeaders
             } as any
@@ -121,17 +137,18 @@ const request = async <Response>(
             await clientLogoutRequest
           } catch (error) {
           } finally {
-            localStorage.removeItem('accessToken')
-            localStorage.removeItem('refreshToken')
+            removeTokensFromLocalStorage()
             clientLogoutRequest = null
-            //Redirect về trang login có thể dẫn đến loop vô hạn 
-            //Nếu không đuọc xử lý đúng cách
-            //Vì rơi vào trường hợp tại trang login, ta gọi các API cần accessToken
-            //Và accessToken đã bị xóa thì lại nhảy vào login, lặp lại liên tục
+            // Redirect về trang login có thể dẫn đến loop vô hạn
+            // Nếu không không được xử lý đúng cách
+            // Vì nếu rơi vào trường hợp tại trang Login, chúng ta có gọi các API cần access token
+            // Mà access token đã bị xóa thì nó lại nhảy vào đây, và cứ thế nó sẽ bị lặp
             location.href = '/login'
           }
         }
       } else {
+        // Đây là trường hợp khi mà chúng ta vẫn còn access token (còn hạn)
+        // Và chúng ta gọi API ở Next.js Server (Route Handler , Server Component) đến Server Backend
         const accessToken = (options?.headers as any)?.Authorization.split(
           'Bearer '
         )[1]
@@ -144,14 +161,14 @@ const request = async <Response>(
   // Đảm bảo logic dưới đây chỉ chạy ở phía client (browser)
   if (isClient) {
     const normalizeUrl = normalizePath(url)
-    if(normalizeUrl === 'api/auth/login') {
+    if (['api/auth/login', 'api/guest/auth/login'].includes(normalizeUrl)) {
       const { accessToken, refreshToken } = (payload as LoginResType).data
-      localStorage.setItem('accessToken', accessToken)
-      localStorage.setItem('refreshToken', refreshToken)
-    }
-    else if (normalizeUrl === 'api/auth/logout') {
-      localStorage.removeItem('accessToken')
-      localStorage.removeItem('refreshToken')
+      setAccessTokenToLocalStorage(accessToken)
+      setRefreshTokenToLocalStorage(refreshToken)
+    } else if (
+      ['api/auth/logout', 'api/guest/auth/logout'].includes(normalizeUrl)
+    ) {
+      removeTokensFromLocalStorage()
     }
   }
   return data

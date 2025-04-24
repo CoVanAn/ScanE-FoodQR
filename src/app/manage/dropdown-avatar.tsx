@@ -25,14 +25,14 @@ import { set } from 'zod'
 export default function DropdownAvatar() {
   const router = useRouter()
   const {data} = useAccountMe()
-  const {setIsAuth} = useAppContext()
+  const {setRole} = useAppContext()
   const account = data?.payload?.data
   const logoutMutation = useLogoutMutation()
   const logout = async () => {
     if (logoutMutation.isPending) return
     try {
       await logoutMutation.mutateAsync()
-      setIsAuth(false)
+      setRole()
       // setRole()
       router.push('/')
     } catch (error: any) {
