@@ -35,7 +35,11 @@ export default function RootLayout({
           `${geistSans.variable} ${geistMono.variable} antialiased`)}
     >
       <head />
-      <body>
+      <body
+              className={cn(
+                'min-h-screen bg-background font-sans antialiased'
+              )}
+      >
         <AppProvider>
           <ThemeProvider
             attribute="class"

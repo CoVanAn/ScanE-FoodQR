@@ -4,7 +4,7 @@ const menuItems = [
   {
     title: 'Dashboard',
     Icon: Home,
-    href: '/'
+    href: '/manage/dashboard',
   },
   {
     title: 'Đơn hàng',
