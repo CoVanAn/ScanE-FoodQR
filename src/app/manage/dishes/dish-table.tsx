@@ -65,10 +65,10 @@ const DishTableContext = createContext<{
   dishDelete: DishItem | null
   setDishDelete: (value: DishItem | null) => void
 }>({
-  setDishIdEdit: (value: number | undefined) => {},
+  setDishIdEdit: (value: number | undefined) => { },
   dishIdEdit: undefined,
   dishDelete: null,
-  setDishDelete: (value: DishItem | null) => {}
+  setDishDelete: (value: DishItem | null) => { }
 })
 
 export const columns: ColumnDef<DishItem>[] = [
@@ -127,11 +127,16 @@ export const columns: ColumnDef<DishItem>[] = [
     cell: function Actions({ row }) {
       const { setDishIdEdit, setDishDelete } = useContext(DishTableContext)
       const openEditDish = () => {
-        setDishIdEdit(row.original.id)
+        requestAnimationFrame(() => {
+          setDishIdEdit(row.original.id)
+
+        })
       }
 
       const openDeleteDish = () => {
-        setDishDelete(row.original)
+        requestAnimationFrame(() => {
+          setDishDelete(row.original)
+        })
       }
       return (
         <DropdownMenu>
@@ -166,7 +171,7 @@ function AlertDialogDeleteDish({
       try {
         const result = await mutateAsync(dishDelete.id)
         setDishDelete(null)
-        toast("",{
+        toast("", {
           description: result.payload.message
         })
       } catch (error) {
@@ -286,9 +291,9 @@ export default function DishTable() {
                         {header.isPlaceholder
                           ? null
                           : flexRender(
-                              header.column.columnDef.header,
-                              header.getContext()
-                            )}
+                            header.column.columnDef.header,
+                            header.getContext()
+                          )}
                       </TableHead>
                     )
                   })}

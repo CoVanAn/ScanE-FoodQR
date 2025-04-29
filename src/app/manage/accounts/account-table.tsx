@@ -139,11 +139,14 @@ export const columns: ColumnDef<AccountType>[] = [
       const { setEmployeeIdEdit, setEmployeeDelete } =
         useContext(AccountTableContext)
       const openEditEmployee = () => {
+        requestAnimationFrame(()=> {
         setEmployeeIdEdit(row.original.id)
+        })
       }
 
       const openDeleteEmployee = () => {
-        setEmployeeDelete(row.original)
+        requestAnimationFrame(()=> {
+        setEmployeeDelete(row.original)})
       }
       return (
         <DropdownMenu>

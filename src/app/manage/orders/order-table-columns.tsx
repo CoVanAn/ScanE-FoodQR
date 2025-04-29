@@ -208,7 +208,9 @@ const orderTableColumns: ColumnDef<OrderItem>[] = [
     cell: function Actions({ row }) {
       const { setOrderIdEdit } = useContext(OrderTableContext)
       const openEditOrder = () => {
-        setOrderIdEdit(row.original.id)
+        requestAnimationFrame(()=> {
+          setOrderIdEdit(row.original.id)
+        })
       }
 
       return (

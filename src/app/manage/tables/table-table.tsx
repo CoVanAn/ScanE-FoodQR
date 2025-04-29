@@ -61,11 +61,12 @@ const TableTableContext = createContext<{
   tableDelete: TableItem | null
   setTableDelete: (value: TableItem | null) => void
 }>({
-  setTableIdEdit: (value: number | undefined) => {},
+  setTableIdEdit: (value: number | undefined) => { },
   tableIdEdit: undefined,
   tableDelete: null,
-  setTableDelete: (value: TableItem | null) => {}
+  setTableDelete: (value: TableItem | null) => { }
 })
+
 
 export const columns: ColumnDef<TableItem>[] = [
   {
@@ -111,26 +112,36 @@ export const columns: ColumnDef<TableItem>[] = [
     cell: function Actions({ row }) {
       const { setTableIdEdit, setTableDelete } = useContext(TableTableContext)
       const openEditTable = () => {
-        setTableIdEdit(row.original.number)
+        requestAnimationFrame(() => {
+          setTableIdEdit(row.original.number)        })
       }
 
       const openDeleteTable = () => {
-        setTableDelete(row.original)
+        (document.activeElement as HTMLElement | null)?.blur()
+        requestAnimationFrame(() => {
+          setTableDelete(row.original)
+        })
       }
+      // const [openMenu, setOpenMenu] = useState(false);
+
       return (
-        <DropdownMenu>
+        <DropdownMenu 
+        // open={openMenu} onOpenChange={setOpenMenu}
+        >
           <DropdownMenuTrigger asChild>
             <Button variant='ghost' className='h-8 w-8 p-0'>
               <span className='sr-only'>Open menu</span>
               <DotsHorizontalIcon className='h-4 w-4' />
             </Button>
           </DropdownMenuTrigger>
-          <DropdownMenuContent align='end'>
-            <DropdownMenuLabel>Actions</DropdownMenuLabel>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem onClick={openEditTable}>Sửa</DropdownMenuItem>
-            <DropdownMenuItem onClick={openDeleteTable}>Xóa</DropdownMenuItem>
-          </DropdownMenuContent>
+          {/* {openMenu && */}
+            <DropdownMenuContent align='end'>
+              <DropdownMenuLabel>Actions</DropdownMenuLabel>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem onClick={openEditTable}>Sửa</DropdownMenuItem>
+              <DropdownMenuItem onClick={openDeleteTable}>Xóa</DropdownMenuItem>
+            </DropdownMenuContent>
+          {/* } */}
         </DropdownMenu>
       )
     }
@@ -150,7 +161,7 @@ function AlertDialogDeleteTable({
       try {
         const result = await mutateAsync(tableDelete.number)
         setTableDelete(null)
-        toast("",{
+        toast("", {
           description: result.payload.message
         })
       } catch (error) {
@@ -165,6 +176,7 @@ function AlertDialogDeleteTable({
       open={Boolean(tableDelete)}
       onOpenChange={(value) => {
         if (!value) {
+          (document.activeElement as HTMLElement | null)?.blur()
           setTableDelete(null)
         }
       }}
@@ -181,7 +193,9 @@ function AlertDialogDeleteTable({
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
-          <AlertDialogCancel>Cancel</AlertDialogCancel>
+          <AlertDialogCancel onClick={() =>
+            (document.activeElement as HTMLElement | null)?.blur()
+          }>Cancel</AlertDialogCancel>
           <AlertDialogAction onClick={deleteTable}>Continue</AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>
@@ -273,9 +287,9 @@ export default function TableTable() {
                         {header.isPlaceholder
                           ? null
                           : flexRender(
-                              header.column.columnDef.header,
-                              header.getContext()
-                            )}
+                            header.column.columnDef.header,
+                            header.getContext()
+                          )}
                       </TableHead>
                     )
                   })}
