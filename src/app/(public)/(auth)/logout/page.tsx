@@ -13,7 +13,7 @@ import { Suspense, useEffect, useRef } from 'react'
 function Logout() {
   const { mutateAsync } = useLogoutMutation()
   const router = useRouter()
-  const {setRole} = useAppContext()
+  const { setRole, socket, setSocket, disconnectSocket } = useAppContext()
   // const { setRole } = useAppContext()
   const searchParams = useSearchParams()
   const refreshTokenFromUrl = searchParams.get('refreshToken')
@@ -27,8 +27,8 @@ function Logout() {
         (accessTokenFromUrl &&
           accessTokenFromUrl === getAccessTokenFromLocalStorage()))
     ) {
-//Khi điều kiện !ref.current đúng (tức là ref.current đang là null), giá trị của ref.current được gán bằng mutateAsync.
-//Điều này đánh dấu rằng logic đăng xuất đang được thực thi, và ngăn chặn việc thực thi lại logic này trong cùng một lần render.
+      //Khi điều kiện !ref.current đúng (tức là ref.current đang là null), giá trị của ref.current được gán bằng mutateAsync.
+      //Điều này đánh dấu rằng logic đăng xuất đang được thực thi, và ngăn chặn việc thực thi lại logic này trong cùng một lần render.
       ref.current = mutateAsync
       mutateAsync().then((res) => {
         setTimeout(() => {
@@ -36,12 +36,13 @@ function Logout() {
         }, 1000)
         // setRole()
         setRole()
+        disconnectSocket()
         router.push('/login')
       })
     } else {
       router.push('/')
     }
-  }, [mutateAsync, router, refreshTokenFromUrl, accessTokenFromUrl])
+  }, [mutateAsync, router, refreshTokenFromUrl, accessTokenFromUrl, disconnectSocket, setRole])
   return <div>Log out....</div>
 }
 export default function LogoutPage() {

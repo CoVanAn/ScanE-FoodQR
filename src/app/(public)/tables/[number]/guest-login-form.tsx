@@ -10,9 +10,11 @@ import { GuestLoginBody, GuestLoginBodyType } from '@/schemaValidations/guest.sc
 import { useParams, useRouter, useSearchParams } from 'next/navigation'
 import { use, useEffect } from 'react'
 import { useGuestLoginMutation } from '@/queries/useGuest'
-import { handleErrorApi } from '@/lib/utils'
+import { generateSocketInstance, handleErrorApi } from '@/lib/utils'
+import { useAppContext } from '@/components/app-provider'
 
 export default function GuestLoginForm() {
+  const {setRole, setSocket} = useAppContext()
   const searchParams = useSearchParams()
   const params = useParams()
   const router = useRouter()
@@ -38,6 +40,8 @@ export default function GuestLoginForm() {
     if (loginMutation.isPending) return
     try {
       const result = await loginMutation.mutateAsync(values)
+      setRole(result.payload.data.guest.role)
+      setSocket(generateSocketInstance(result.payload.data.accessToken))
       router.push('/guest/menu')
     } catch (error) {
       handleErrorApi({

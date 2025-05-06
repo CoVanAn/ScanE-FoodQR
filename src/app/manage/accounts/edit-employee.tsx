@@ -40,6 +40,7 @@ import {
   FormItem,
   FormMessage
 } from '@/components/ui/form'
+import { z } from 'zod'
 export default function EditEmployee({
   id,
   setId,
@@ -67,7 +68,7 @@ export default function EditEmployee({
       password: undefined,
       confirmPassword: undefined,
       changePassword: false,
-      // role: Role.Employee
+      role: z.enum([Role.Employee, Role.Owner]).optional().nullable() as unknown as "Owner" | "Employee" | undefined
     }
   })
   const avatar = form.watch('avatar')
@@ -82,7 +83,7 @@ export default function EditEmployee({
 
   useEffect(() => {
     if (data) {
-      const { name, avatar, email } = data.payload.data
+      const { name, avatar, email, role } = data.payload.data
       form.reset({
         name,
         avatar: avatar ?? undefined,
@@ -90,12 +91,13 @@ export default function EditEmployee({
         changePassword: form.getValues('changePassword'),
         password: form.getValues('password'),
         confirmPassword: form.getValues('confirmPassword'),
-        // role
+        role
       })
     }
   }, [data, form])
 
   const onSubmit = async (values: UpdateEmployeeAccountBodyType) => {
+    console.log('values', values)
     if (updateAccountMutation.isPending) return
     try {
       let body: UpdateEmployeeAccountBodyType & { id: number } = {
@@ -225,7 +227,7 @@ export default function EditEmployee({
                   </FormItem>
                 )}
               />
-              {/* <FormField
+              <FormField
                 control={form.control}
                 name='role'
                 render={({ field }) => (
@@ -254,13 +256,12 @@ export default function EditEmployee({
                             })}
                           </SelectContent>
                         </Select>
+                        <FormMessage />
                       </div>
-
-                      <FormMessage />
                     </div>
                   </FormItem>
                 )}
-              /> */}
+              />
               <FormField
                 control={form.control}
                 name='changePassword'

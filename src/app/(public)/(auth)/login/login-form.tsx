@@ -9,17 +9,20 @@ import { LoginBody, LoginBodyType } from '@/schemaValidations/auth.schema'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useLoginMutation } from '@/queries/useAuth'
 import { toast } from 'sonner'
-import { handleErrorApi, removeTokensFromLocalStorage } from '@/lib/utils'
+import { generateSocketInstance, getAccessTokenFromLocalStorage, handleErrorApi, removeTokensFromLocalStorage } from '@/lib/utils'
 import { Eye, EyeOff } from "lucide-react"; // Import icon từ lucide-react
 import React, { useEffect } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { useAppContext } from '@/components/app-provider'
+// import socket from '@/lib/socket'
+// import { io } from 'socket.io-client'
+// import envConfig from '@/config'
 
 export default function LoginForm() {
   const router = useRouter()
   const loginMutation = useLoginMutation()
   const searchParams = useSearchParams()
-  const {setRole} = useAppContext()
+  const {setRole, setSocket} = useAppContext()
   const clearToken = searchParams.get('clearToken')
   const form = useForm<LoginBodyType>({
     resolver: zodResolver(LoginBody),
@@ -48,7 +51,8 @@ export default function LoginForm() {
         },
       })
       setRole(result.payload.data.account.role)
-      router.push('/manage/dashboard')
+      setSocket(generateSocketInstance(result.payload.data.accessToken))
+      router.push('/manage/orders')
     }
     catch (error: any) {
       handleErrorApi({

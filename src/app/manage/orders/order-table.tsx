@@ -58,7 +58,8 @@ import {
   useUpdateOrderMutation
 } from '@/queries/useOrder'
 import { useTableListQuery } from '@/queries/useTable'
-import socket from '@/lib/socket'
+import { useAppContext } from '@/components/app-provider'
+// import socket from '@/lib/socket'
 
 export const OrderTableContext = createContext({
   setOrderIdEdit: (value: number | undefined) => {},
@@ -88,6 +89,7 @@ const initFromDate = startOfDay(new Date())
 const initToDate = endOfDay(new Date())
 
 export default function OrderTable() {
+  const {socket} = useAppContext()
   const searchParam = useSearchParams()
   const [openStatusFilter, setOpenStatusFilter] = useState(false)
   const [fromDate, setFromDate] = useState(initFromDate)
@@ -166,12 +168,12 @@ export default function OrderTable() {
   }
 
   useEffect(() => {
-    if (socket.connected) {
+    if (socket?.connected) {
       onConnect()
     }
 
     function onConnect() {
-      console.log(socket.id)
+      console.log(socket?.id)
     }
 
     function onDisconnect() {
@@ -214,20 +216,20 @@ export default function OrderTable() {
       refetch()
     }
 
-    socket.on('update-order', onUpdateOrder)
-    socket.on('new-order', onNewOrder)
-    socket.on('connect', onConnect)
-    socket.on('disconnect', onDisconnect)
-    socket.on('payment', onPayment)
+    socket?.on('update-order', onUpdateOrder)
+    socket?.on('new-order', onNewOrder)
+    socket?.on('connect', onConnect)
+    socket?.on('disconnect', onDisconnect)
+    socket?.on('payment', onPayment)
 
     return () => {
-      socket.off('connect', onConnect)
-      socket.off('disconnect', onDisconnect)
-      socket.off('update-order', onUpdateOrder)
-      socket.off('new-order', onNewOrder)
-      socket.off('payment', onPayment)
+      socket?.off('connect', onConnect)
+      socket?.off('disconnect', onDisconnect)
+      socket?.off('update-order', onUpdateOrder)
+      socket?.off('new-order', onNewOrder)
+      socket?.off('payment', onPayment)
     }
-  }, [refetchOrderList, fromDate, toDate])
+  }, [refetchOrderList, fromDate, toDate, socket])
 
   return (
     <OrderTableContext.Provider

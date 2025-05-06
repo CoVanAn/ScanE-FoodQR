@@ -117,7 +117,7 @@ export const columns: ColumnDef<TableItem>[] = [
       }
 
       const openDeleteTable = () => {
-        (document.activeElement as HTMLElement | null)?.blur()
+        // (document.activeElement as HTMLElement | null)?.blur()
         requestAnimationFrame(() => {
           setTableDelete(row.original)
         })

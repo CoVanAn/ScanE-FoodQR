@@ -11,6 +11,7 @@ import { TokenPayload } from "@/types/jwt.types"
 import envConfig from "@/config"
 import { format } from 'date-fns'
 import { BookX, CookingPot, HandCoins, Loader, Truck } from 'lucide-react'
+import { io } from "socket.io-client"
 
 
 export function cn(...inputs: ClassValue[]) {
@@ -34,7 +35,7 @@ export const handleErrorApi = ({
       })
     })
   } else {
-    toast("Event has been created",{
+    toast("Event has been created", {
       description: error?.payload?.message ?? 'Lỗi không xác định',
       action: {
         label: 'Đóng',
@@ -83,11 +84,12 @@ export const setRefreshTokenToLocalStorage = (value: string) =>
 export const removeTokensFromLocalStorage = () => {
   isBrowser && localStorage.removeItem('accessToken')
   isBrowser && localStorage.removeItem('refreshToken')
-  
+
 }
 export const checkAndRefreshToken = async (param?: {
   onError?: () => void
   onSuccess?: () => void
+  force?: boolean
 }) => {
   // Không nên đưa logic lấy access và refresh token ra khỏi cái function `checkAndRefreshToken`
   // Vì để mỗi lần mà checkAndRefreshToken() được gọi thì chúng ta sẽ có một access và refresh token mới
@@ -100,7 +102,7 @@ export const checkAndRefreshToken = async (param?: {
   const decodedRefreshToken = decodeToken(refreshToken)
   // Thời điểm hết hạn của token là tính theo epoch time (s)
   // Còn khi dùng cú pháp new Date().getTime() thì nó sẽ trả về epoch time (ms)
-  const now = Math.round(new Date().getTime() / 1000) - 1 
+  const now = Math.round(new Date().getTime() / 1000) - 1
   // trường hợp refresh token hết hạn thì cho logout
   if (decodedRefreshToken.exp <= now) {
     removeTokensFromLocalStorage()
@@ -111,8 +113,10 @@ export const checkAndRefreshToken = async (param?: {
   // Thời gian còn lại sẽ tính dựa trên công thức: decodedAccessToken.exp - now
   // Thời gian hết hạn của access token dựa trên công thức: decodedAccessToken.exp - decodedAccessToken.iat
   if (
-    decodedAccessToken.exp - now <
-    (decodedAccessToken.exp - decodedAccessToken.iat) / 3
+    param?.force || (
+      decodedAccessToken.exp - now <
+      (decodedAccessToken.exp - decodedAccessToken.iat) / 3
+    )
   ) {
     // Gọi API refresh token
     try {
@@ -212,6 +216,22 @@ export const simpleMatchText = (fullText: string, matchText: string) => {
   )
 }
 
+export const getRoleFromClient = () => {
+  const accessToken = getAccessTokenFromLocalStorage()
+  return accessToken ? decodeToken(accessToken).role : undefined
+  // if (!accessToken) return null
+  // const decodedAccessToken = decodeToken(accessToken)
+  // return decodedAccessToken.role
+}
+
+export const generateSocketInstance = (accessToken: string) => {
+  return io(envConfig.NEXT_PUBLIC_API_ENDPOINT, {
+    auth: {
+      Authorization: `Bearer ${accessToken}`
+    }
+  })
+}
+
 export const OrderStatusIcon = {
   [OrderStatus.Pending]: Loader,
   [OrderStatus.Processing]: CookingPot,
@@ -219,3 +239,4 @@ export const OrderStatusIcon = {
   [OrderStatus.Delivered]: Truck,
   [OrderStatus.Paid]: HandCoins
 }
+

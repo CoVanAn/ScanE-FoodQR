@@ -1,11 +1,11 @@
-import { RoleValues } from '@/constants/type'
+import { RoleValues, Role } from '@/constants/type'
 import z from 'zod'
 
 export const AccountSchema = z.object({
   id: z.number(),
   name: z.string(),
   email: z.string(),
-  role: z.string(),
+  role: z.enum([Role.Owner, Role.Employee]),
   avatar: z.string().nullable()
 })
 
@@ -33,7 +33,8 @@ export const CreateEmployeeAccountBody = z
     email: z.string().email(),
     avatar: z.string().url().optional(),
     password: z.string().min(6).max(100),
-    confirmPassword: z.string().min(6).max(100)
+    confirmPassword: z.string().min(6).max(100),
+    // role: z.enum([Role.Employee])
   })
   .strict()
   .superRefine(({ confirmPassword, password }, ctx) => {
@@ -55,7 +56,8 @@ export const UpdateEmployeeAccountBody = z
     avatar: z.string().url().optional(),
     changePassword: z.boolean().optional(),
     password: z.string().min(6).max(100).optional(),
-    confirmPassword: z.string().min(6).max(100).optional()
+    confirmPassword: z.string().min(6).max(100).optional(),
+    role    : z.enum([Role.Employee, Role.Owner]).optional()
   })
   .strict()
   .superRefine(({ confirmPassword, password, changePassword }, ctx) => {

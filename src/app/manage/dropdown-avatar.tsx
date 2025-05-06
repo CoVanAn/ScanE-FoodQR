@@ -25,7 +25,7 @@ import { set } from 'zod'
 export default function DropdownAvatar() {
   const router = useRouter()
   const {data} = useAccountMe()
-  const {setRole} = useAppContext()
+  const {setRole, setSocket, socket, disconnectSocket} = useAppContext()
   const account = data?.payload?.data
   const logoutMutation = useLogoutMutation()
   const logout = async () => {
@@ -33,7 +33,7 @@ export default function DropdownAvatar() {
     try {
       await logoutMutation.mutateAsync()
       setRole()
-      // setRole()
+      disconnectSocket()
       router.push('/')
     } catch (error: any) {
       handleErrorApi({
