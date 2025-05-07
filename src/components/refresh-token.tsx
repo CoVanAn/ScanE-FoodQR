@@ -1,6 +1,6 @@
 'use client'
 
-import { checkAndRefreshToken } from '@/lib/utils'
+import { checkAndRefreshToken, getRoleFromClient } from '@/lib/utils'
 import { on } from 'events'
 import { usePathname, useRouter } from 'next/navigation'
 import { useEffect } from 'react'
@@ -28,6 +28,7 @@ export default function RefreshToken() {
       force
     })
   }
+    // router.push('refresh-token')
     onRefreshToken()
     // Timeout interval phải bé hơn thời gian hết hạn của access token
     // Ví dụ thời gian hết hạn access token là 10s thì 1s mình sẽ cho check 1 lần
@@ -51,16 +52,13 @@ export default function RefreshToken() {
 
     const onRefreshTokenSocket = (data: any) => {
       console.log('refresh-token-socket', data)
+      console.log('role', data.role)
       onRefreshToken(true)
     }
 
 
     socket?.on('connect', onConnect)
     socket?.on('disconnect', onDisconnect)
-    // socket.on('refresh-token', onRefreshToken)
-    // socket.on('refresh-token', (data)=>{
-    //   console.log('refresh-token', data)
-    // })
     socket?.on('refresh-token', onRefreshTokenSocket)
 
     return () => {

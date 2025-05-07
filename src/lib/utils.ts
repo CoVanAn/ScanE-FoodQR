@@ -12,6 +12,7 @@ import envConfig from "@/config"
 import { format } from 'date-fns'
 import { BookX, CookingPot, HandCoins, Loader, Truck } from 'lucide-react'
 import { io } from "socket.io-client"
+// import { console } from "inspector"
 
 
 export function cn(...inputs: ClassValue[]) {
@@ -96,6 +97,9 @@ export const checkAndRefreshToken = async (param?: {
   // Tránh hiện tượng bug nó lấy access và refresh token cũ ở lần đầu rồi gọi cho các lần tiếp theo
   const accessToken = getAccessTokenFromLocalStorage()
   const refreshToken = getRefreshTokenFromLocalStorage()
+
+  // console.log('accessToken: ', accessToken)
+  // console.log('accessToken mới: ', accessToken)
   // Chưa đăng nhập thì cũng không cho chạy
   if (!accessToken || !refreshToken) return
   const decodedAccessToken = decodeToken(accessToken)
@@ -112,11 +116,28 @@ export const checkAndRefreshToken = async (param?: {
   // thì ta sẽ kiểm tra còn 1/3 thời gian (3s) sẽ cho refresh token lại
   // Thời gian còn lại sẽ tính dựa trên công thức: decodedAccessToken.exp - now
   // Thời gian hết hạn của access token dựa trên công thức: decodedAccessToken.exp - decodedAccessToken.iat
+  if(
+    param?.force 
+  ) {
+    try {
+      const role = decodedRefreshToken.role
+      const res =
+        role === Role.Guest
+          ? await guestApiRequest.refreshToken()
+          : await authApiRequest.refreshToken()
+      setAccessTokenToLocalStorage(res.payload.data.accessToken)
+      setRefreshTokenToLocalStorage(res.payload.data.refreshToken)
+      param?.onSuccess && param.onSuccess()
+      window.location.reload()
+    } catch (error) {
+      param?.onError && param.onError()
+    }
+  }
+  else
   if (
-    param?.force || (
-      decodedAccessToken.exp - now <
-      (decodedAccessToken.exp - decodedAccessToken.iat) / 3
-    )
+    param?.force || 
+    (decodedAccessToken.exp - now <
+      (decodedAccessToken.exp - decodedAccessToken.iat) / 3 )
   ) {
     // Gọi API refresh token
     try {

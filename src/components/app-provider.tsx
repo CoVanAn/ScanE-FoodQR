@@ -10,6 +10,8 @@ import React, {  useCallback, useEffect, useRef } from 'react'
 import { createContext, useContext, useState } from 'react'
 import RefreshToken from './refresh-token'
 import type { Socket } from 'socket.io-client'
+import ListenLogoutSocket from './listen-logout-socket'
+
 
 const queryClient = new QueryClient(
     {
@@ -44,6 +46,7 @@ export default function AppProvider({ children }: Readonly<{
     const [socket, setSocket] = useState<Socket | undefined>()
     const [role, setRoleState] = useState<RoleType | undefined>()
     const count = useRef(0)
+    // ListenLogoutSocket()
     useEffect(() => {
         if(count.current === 0) {
             const accessToken = getAccessTokenFromLocalStorage()
@@ -77,6 +80,8 @@ export default function AppProvider({ children }: Readonly<{
             <QueryClientProvider client={queryClient}>
                 {children}
                 <RefreshToken />
+                <ListenLogoutSocket />
+                {/* <ReactQueryDevtools initialIsOpen={false} /> */}
                 <ReactQueryDevtools initialIsOpen={false} />
             </QueryClientProvider>
         </AppContext>
