@@ -42,6 +42,8 @@ export default function GuestLoginForm() {
       const result = await loginMutation.mutateAsync(values)
       setRole(result.payload.data.guest.role)
       setSocket(generateSocketInstance(result.payload.data.accessToken))
+      console.log(result.payload.data.guest.name)
+      localStorage.setItem('guestName', result.payload.data.guest.name)
       router.push('/guest/menu')
     } catch (error) {
       handleErrorApi({

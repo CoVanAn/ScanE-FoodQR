@@ -4,21 +4,21 @@ import { Button } from '@/components/ui/button'
 import { useDishListQuery } from '@/queries/useDish'
 import { cn, formatCurrency, handleErrorApi } from '@/lib/utils'
 import Quantity from '@/app/guest/menu/quantity'
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { GuestCreateOrdersBodyType } from '@/schemaValidations/guest.schema'
 import { useGuestOrderMutation } from '@/queries/useGuest'
 import { useRouter } from 'next/navigation'
 import { DishStatus } from '@/constants/type'
-import { QueryClient } from '@tanstack/react-query'
+import { useCart } from '@/lib/hooks/useCart'
+import { toast } from 'sonner'
 
 export default function MenuOrder() {
   const { data } = useDishListQuery()
   const dishes = useMemo(() => data?.payload.data ?? [], [data])
   const [orders, setOrders] = useState<GuestCreateOrdersBodyType>([])
-  const { mutateAsync } = useGuestOrderMutation()
-  const queryClient = new QueryClient()
   const router = useRouter()
-  // React 19 hoặc Next.js 15 thì không cần dùng useMemo chỗ này
+  const { addToCart, cartItems, cartCount } = useCart()
+    // React 19 hoặc Next.js 15 thì không cần dùng useMemo chỗ này
   const totalPrice = useMemo(() => {
     return dishes.reduce((result, dish) => {
       const order = orders.find((order) => order.dishId === dish.id)
@@ -26,7 +26,6 @@ export default function MenuOrder() {
       return result + order.quantity * dish.price
     }, 0)
   }, [dishes, orders])
-
   const handleQuantityChange = (dishId: number, quantity: number) => {
     setOrders((prevOrders) => {
       if (quantity === 0) {
@@ -41,16 +40,20 @@ export default function MenuOrder() {
       return newOrders
     })
   }
-
-  const handleOrder = async () => {
-    try {
-      await mutateAsync(orders)
-      router.push(`/guest/orders`)
-    } catch (error) {
-      handleErrorApi({
-        error
-      })
-    }
+  const handleAddToCart = () => {
+    // Thêm từng món đã chọn vào giỏ hàng
+    orders.forEach(order => {
+      addToCart(order.dishId, order.quantity)
+    })
+    
+    // Hiển thị thông báo thành công
+    toast.success(`Đã thêm ${orders.length} món vào giỏ hàng`)
+    
+    // Reset lại danh sách đã chọn
+    setOrders([])
+    
+    // Điều hướng đến trang giỏ hàng
+    router.push('/guest/cart')
   }
   return (
     <>
@@ -84,8 +87,7 @@ export default function MenuOrder() {
               <p className='text-xs font-semibold'>
                 {formatCurrency(dish.price)}
               </p>
-            </div>
-            <div className='flex-shrink-0 ml-auto flex justify-center items-center'>
+            </div>            <div className='flex-shrink-0 ml-auto flex justify-center items-center'>
               <Quantity
                 onChange={(value) => handleQuantityChange(dish.id, value)}
                 value={
@@ -95,15 +97,22 @@ export default function MenuOrder() {
               />
             </div>
           </div>
-        ))}
-      <div className='sticky bottom-0'>
+        ))}      <div className='sticky bottom-0 flex flex-col gap-2'>
         <Button
           className='w-full justify-between'
-          onClick={handleOrder}
+          onClick={handleAddToCart}
           disabled={orders.length === 0}
         >
-          <span>Đặt hàng · {orders.length} món</span>
+          <span>Thêm vào giỏ hàng · {orders.length} món</span>
           <span>{formatCurrency(totalPrice)}</span>
+        </Button>
+        
+        <Button
+          className='w-full'
+          variant="outline"
+          onClick={() => router.push('/guest/cart')}
+        >
+          Xem giỏ hàng {cartCount > 0 && `(${cartCount})`}
         </Button>
       </div>
     </>
