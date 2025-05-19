@@ -40,12 +40,14 @@ import { useAddDishMutation } from '@/queries/useDish'
 import { useUploadMediaMutation } from '@/queries/useMedia'
 import { toast } from 'sonner'
 import revalidateApiRequest from '@/apiRequests/revalidate'
+import { useCategoryListQuery } from '@/queries/useCategory'
 
 export default function AddDish() {
   const [file, setFile] = useState<File | null>(null)
   const [open, setOpen] = useState(false)
   const addDishMutation = useAddDishMutation()
   const uploadMediaMutation = useUploadMediaMutation()
+  const categoryListQuery = useCategoryListQuery()
   const imageInputRef = useRef<HTMLInputElement | null>(null)
   const form = useForm<CreateDishBodyType>({
     resolver: zodResolver(CreateDishBody),
@@ -54,7 +56,8 @@ export default function AddDish() {
       description: '',
       price: 0,
       image: undefined,
-      status: DishStatus.Unavailable
+      status: DishStatus.Unavailable,
+      categoryId: null
     }
   })
   const image = form.watch('image')
@@ -201,6 +204,38 @@ export default function AddDish() {
                           {...field}
                           type='number'
                         />
+                        <FormMessage />
+                      </div>
+                    </div>
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name='categoryId'
+                render={({ field }) => (
+                  <FormItem>
+                    <div className='grid grid-cols-4 items-center justify-items-start gap-4'>
+                      <Label htmlFor='categoryId'>Danh mục</Label>
+                      <div className='col-span-3 w-full space-y-2'>
+                        <Select
+                          onValueChange={(value) => field.onChange(value ? Number(value) : null)}
+                          value={field.value?.toString() || ''}
+                        >
+                          <FormControl>
+                            <SelectTrigger>
+                              <SelectValue placeholder='Chọn danh mục' />
+                            </SelectTrigger>
+                          </FormControl>
+                          <SelectContent>
+                            {/* <SelectItem value="">Không có danh mục</SelectItem> */}
+                            {categoryListQuery.data?.payload.data.map((category) => (
+                              <SelectItem key={category.id} value={category.id.toString()}>
+                                {category.name}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
                         <FormMessage />
                       </div>
                     </div>

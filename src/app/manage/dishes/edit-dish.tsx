@@ -40,6 +40,7 @@ import { useUploadMediaMutation } from '@/queries/useMedia'
 import { useGetDishQuery, useUpdateDishMutation } from '@/queries/useDish'
 import { toast } from 'sonner'
 import revalidateApiRequest from '@/apiRequests/revalidate'
+import { useCategoryListQuery } from '@/queries/useCategory'
 
 export default function EditDish({
   id,
@@ -54,6 +55,7 @@ export default function EditDish({
   const imageInputRef = useRef<HTMLInputElement | null>(null)
   const uploadMediaMutation = useUploadMediaMutation()
   const updateDishMutation = useUpdateDishMutation()
+  const categoryListQuery = useCategoryListQuery()
   const { data } = useGetDishQuery({ enabled: Boolean(id), id: id as number })
   const form = useForm<UpdateDishBodyType>({
     resolver: zodResolver(UpdateDishBody),
@@ -62,7 +64,8 @@ export default function EditDish({
       description: '',
       price: 0,
       image: undefined,
-      status: DishStatus.Unavailable
+      status: DishStatus.Unavailable,
+      categoryId: null
     }
   })
   const image = form.watch('image')
@@ -77,16 +80,18 @@ export default function EditDish({
 
   useEffect(() => {
     if (data) {
-      const { name, image, description, price, status } = data.payload.data
+      const { name, image, description, price, status, categoryId } = data.payload.data
       form.reset({
         name,
         image: image ?? undefined,
         description,
         price,
-        status
+        status,
+        categoryId
       })
     }
   }, [data, form])
+  
   const onSubmit = async (values: UpdateDishBodyType) => {
     if (updateDishMutation.isPending) return
     try {
@@ -139,7 +144,7 @@ export default function EditDish({
         <DialogHeader>
           <DialogTitle>Cập nhật món ăn</DialogTitle>
           <DialogDescription>
-            Các trường sau đây là bắ buộc: Tên, ảnh
+            Các trường sau đây là bắt buộc: Tên, ảnh
           </DialogDescription>
         </DialogHeader>
         <Form {...form}>
@@ -217,6 +222,38 @@ export default function EditDish({
                           {...field}
                           type='number'
                         />
+                        <FormMessage />
+                      </div>
+                    </div>
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name='categoryId'
+                render={({ field }) => (
+                  <FormItem>
+                    <div className='grid grid-cols-4 items-center justify-items-start gap-4'>
+                      <Label htmlFor='categoryId'>Danh mục</Label>
+                      <div className='col-span-3 w-full space-y-2'>
+                        <Select
+                          onValueChange={(value) => field.onChange(value ? Number(value) : null)}
+                          value={field.value?.toString() || ''}
+                        >
+                          <FormControl>
+                            <SelectTrigger>
+                              <SelectValue placeholder='Chọn danh mục' />
+                            </SelectTrigger>
+                          </FormControl>
+                          <SelectContent>
+                            {/* <SelectItem value="">Không có danh mục</SelectItem> */}
+                            {categoryListQuery.data?.payload.data.map((category) => (
+                              <SelectItem key={category.id} value={category.id.toString()}>
+                                {category.name}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
                         <FormMessage />
                       </div>
                     </div>

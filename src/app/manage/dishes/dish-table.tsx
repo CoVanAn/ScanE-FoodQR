@@ -25,6 +25,13 @@ import {
 } from '@/components/ui/dropdown-menu'
 import { Input } from '@/components/ui/input'
 import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue
+} from '@/components/ui/select'
+import {
   Table,
   TableBody,
   TableCell,
@@ -55,6 +62,7 @@ import { DishListResType } from '@/schemaValidations/dish.schema'
 import EditDish from '@/app/manage/dishes/edit-dish'
 import AddDish from '@/app/manage/dishes/add-dish'
 import { useDeleteDishMutation, useDishListQuery } from '@/queries/useDish'
+import { useCategoryListQuery } from '@/queries/useCategory'
 import { toast } from 'sonner'
 
 type DishItem = DishListResType['data'][0]
@@ -101,6 +109,14 @@ export const columns: ColumnDef<DishItem>[] = [
     cell: ({ row }) => (
       <div className='capitalize'>{formatCurrency(row.getValue('price'))}</div>
     )
+  },
+  {
+    accessorKey: 'category',
+    header: 'Danh mục',
+    cell: ({ row }) => {
+      const category = row.original.category
+      return <div>{category ? category.name : 'Không có danh mục'}</div>
+    }
   },
   {
     accessorKey: 'description',
@@ -217,8 +233,28 @@ export default function DishTable() {
   const pageIndex = page - 1
   const [dishIdEdit, setDishIdEdit] = useState<number | undefined>()
   const [dishDelete, setDishDelete] = useState<DishItem | null>(null)
-  const dishListQuery = useDishListQuery()
+  const [selectedCategory, setSelectedCategory] = useState<string | null>(null)
+
+  // Fetch categories for filtering
+  const categoryListQuery = useCategoryListQuery()
+
+  const categories = categoryListQuery.data?.payload.data ?? []
+
+  // Fetch dishes with optional category filter
+  const dishListQuery = useDishListQuery(selectedCategory ? Number(selectedCategory) : null)
   const data = dishListQuery.data?.payload.data ?? []
+  const isLoading = dishListQuery.isLoading
+  // Reset page khi thay đổi category
+  // useEffect(() => {
+  //   if (table) {
+  //     table.setPageIndex(0)
+
+  //     // Also reset the URL query parameter for pagination
+  //     const url = new URL(window.location.href)
+  //     url.searchParams.delete('page')
+  //     window.history.replaceState({}, '', url)
+  //   }
+  // }, [selectedCategory])
   const [sorting, setSorting] = useState<SortingState>([])
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([])
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({})
@@ -259,23 +295,89 @@ export default function DishTable() {
 
   return (
     <DishTableContext.Provider
-      value={{ dishIdEdit, setDishIdEdit, dishDelete, setDishDelete }}
-    >
+      value={{ dishIdEdit, setDishIdEdit, dishDelete, setDishDelete }} >
       <div className='w-full'>
         <EditDish id={dishIdEdit} setId={setDishIdEdit} />
         <AlertDialogDeleteDish
           dishDelete={dishDelete}
           setDishDelete={setDishDelete}
         />
-        <div className='flex items-center py-4'>
-          <Input
-            placeholder='Lọc tên'
-            value={(table.getColumn('name')?.getFilterValue() as string) ?? ''}
-            onChange={(event) =>
-              table.getColumn('name')?.setFilterValue(event.target.value)
-            }
-            className='max-w-sm'
-          />
+        <div className='flex flex-wrap items-center gap-4 py-4'>
+          <div>
+            <label className="text-sm font-medium mb-1 block">Tên món ăn</label>
+            <Input
+              placeholder='Lọc tên'
+              value={(table.getColumn('name')?.getFilterValue() as string) ?? ''}
+              onChange={(event) =>
+                table.getColumn('name')?.setFilterValue(event.target.value)
+              }
+              className='max-w-sm'
+              aria-label="Lọc theo tên món ăn"
+            />
+          </div>
+
+          <div className='w-[200px]'>
+            <label className="text-sm font-medium mb-1 block">Danh mục</label>
+            <Select
+              value={selectedCategory || ''}
+              onValueChange={(value) => {
+                setSelectedCategory(value === '' ? null : value);
+              }}
+              disabled={categoryListQuery.isLoading}    >
+              <SelectTrigger>
+                <SelectValue placeholder="Lọc theo danh mục" />
+              </SelectTrigger>
+              <SelectContent>
+                {categories.map(category => (
+                  <SelectItem key={category.id} value={String(category.id)}>
+                    {category.name}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+
+            </Select>
+            {categoryListQuery.isLoading && (
+              <p className="text-xs text-muted-foreground mt-1">Đang tải danh mục...</p>
+            )}
+
+          </div>
+          <div>
+            <br/>
+            {/* <Select
+              value={table.getColumn('status')?.getFilterValue() as string || ''}
+              onValueChange={(value) => {
+                table.getColumn('status')?.setFilterValue(value)
+              }}
+              disabled={isLoading}
+            >
+              <SelectTrigger>
+                <SelectValue placeholder='Lọc theo trạng thái' />
+              </SelectTrigger>
+              <SelectContent>
+                {data.map((dish) => (
+                  <SelectItem key={dish.id} value={String(dish.status)}>
+                    {getVietnameseDishStatus(dish.status)}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select> */}
+            <Button
+              variant="outline"
+              onClick={() => {
+                // Reset name filter
+                table.getColumn('name')?.setFilterValue('');
+                // Reset category filter
+                setSelectedCategory(null);
+              }}
+              disabled={
+                !selectedCategory &&
+                !((table.getColumn('name')?.getFilterValue() as string) ?? '')
+              }
+            >
+              Bỏ lọc
+            </Button>
+          </div>
+
           <div className='ml-auto flex items-center gap-2'>
             <AddDish />
           </div>
@@ -301,7 +403,16 @@ export default function DishTable() {
               ))}
             </TableHeader>
             <TableBody>
-              {table.getRowModel().rows?.length ? (
+              {isLoading ? (
+                <TableRow>
+                  <TableCell
+                    colSpan={columns.length}
+                    className='h-24 text-center'
+                  >
+                    Đang tải...
+                  </TableCell>
+                </TableRow>
+              ) : table.getRowModel().rows?.length ? (
                 table.getRowModel().rows.map((row) => (
                   <TableRow
                     key={row.id}
@@ -323,7 +434,7 @@ export default function DishTable() {
                     colSpan={columns.length}
                     className='h-24 text-center'
                   >
-                    No results.
+                    {selectedCategory ? 'Không tìm thấy món ăn trong danh mục này.' : 'Không có kết quả nào.'}
                   </TableCell>
                 </TableRow>
               )}
