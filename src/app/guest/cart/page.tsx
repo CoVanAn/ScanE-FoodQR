@@ -30,10 +30,10 @@ export default function CartPage() {
   const handleQuantityChange = (dishId: number, quantity: number) => {
     updateQuantity(dishId, quantity)
   }
-
+  
   // Xử lý đặt hàng
   const handleOrder = async () => {
-    try {
+    try {      
       await mutateAsync(cartItems)
       // Xóa giỏ hàng sau khi đặt hàng thành công
       setCartItems([])
@@ -54,7 +54,7 @@ export default function CartPage() {
   }, [cartItems, router])
 
   return (
-    <div className="container py-4 space-y-4">
+    <div className="container py-4 space-y-4 px-6 sm:px-0">
       <h1 className="text-2xl font-bold">Giỏ hàng của bạn</h1>
       
       {cartItems.length === 0 ? (

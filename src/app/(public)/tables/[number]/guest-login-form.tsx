@@ -35,10 +35,12 @@ export default function GuestLoginForm() {
       router.push('/')
     }
   }, [token, router])    
-
   async function onSubmit(values: GuestLoginBodyType) {
     if (loginMutation.isPending) return
     try {
+      // Xóa giỏ hàng cũ trong localStorage khi khách đăng nhập vào bàn
+      localStorage.removeItem('cart-items')
+      
       const result = await loginMutation.mutateAsync(values)
       setRole(result.payload.data.guest.role)
       setSocket(generateSocketInstance(result.payload.data.accessToken))

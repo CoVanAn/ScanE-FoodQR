@@ -112,10 +112,10 @@ export default function OrdersCart() {
     }
   }, [refetch, socket])
   return (
-    <>
+    <div className='container py-4 space-y-4 px-6 sm:px-0'>
       {orders.map((order, index) => (
         <div key={order.id} className='flex gap-4'>
-          <div className='text-sm font-semibold'>{index + 1}</div>
+          {/* <div className='text-sm font-semibold'>{index + 1}</div> */}
           <div className='flex-shrink-0 relative'>
             <Image
               src={order.dishSnapshot.image}
@@ -149,11 +149,14 @@ export default function OrdersCart() {
         </div>
       )}
       <div className='sticky bottom-0 '>
-        <div className='w-full flex space-x-4 text-xl font-semibold'>
+        <div className='w-full flex space-x-4 font-semibold'>
           <span>Đơn chưa thanh toán · {waitingForPaying.quantity} món</span>
           <span>{formatCurrency(waitingForPaying.price)}</span>
         </div>
       </div>
-    </>
+      <div>
+        Bấm để thanh toán đơn hàng
+      </div>
+    </div>
   )
 }

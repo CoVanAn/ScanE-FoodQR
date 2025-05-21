@@ -41,11 +41,8 @@ export default function MenuOrder() {
     })
   }
   const handleAddToCart = () => {
-    // Thêm từng món đã chọn vào giỏ hàng
-    orders.forEach(order => {
-      addToCart(order.dishId, order.quantity)
-    })
-    
+   
+    addToCart(orders)
     // Hiển thị thông báo thành công
     toast.success(`Đã thêm ${orders.length} món vào giỏ hàng`)
     
@@ -62,11 +59,13 @@ export default function MenuOrder() {
         .map((dish) => (
           <div
             key={dish.id}
-            className={cn('flex gap-4', {
+            className={
+              cn('flex gap-3 px-6 sm:px-0', {
               'pointer-events-none': dish.status === DishStatus.Unavailable
             })}
+            
           >
-            <div className='flex-shrink-0 relative'>
+            <div className='flex-shrink-0 relative '>
               {dish.status === DishStatus.Unavailable && (
                 <span className='absolute inset-0 flex items-center justify-center text-sm'>
                   Hết hàng
@@ -87,7 +86,8 @@ export default function MenuOrder() {
               <p className='text-xs font-semibold'>
                 {formatCurrency(dish.price)}
               </p>
-            </div>            <div className='flex-shrink-0 ml-auto flex justify-center items-center'>
+            </div>          
+              <div className='flex-shrink-0 ml-auto flex justify-center items-center'>
               <Quantity
                 onChange={(value) => handleQuantityChange(dish.id, value)}
                 value={
@@ -99,7 +99,7 @@ export default function MenuOrder() {
           </div>
         ))}      <div className='sticky bottom-0 flex flex-col gap-2'>
         <Button
-          className='w-full justify-between'
+          className='w-full justify-between h-12'
           onClick={handleAddToCart}
           disabled={orders.length === 0}
         >
@@ -108,7 +108,7 @@ export default function MenuOrder() {
         </Button>
         
         <Button
-          className='w-full'
+          className='w-full h-12'
           variant="outline"
           onClick={() => router.push('/guest/cart')}
         >

@@ -29,10 +29,10 @@ export default function GuestLayout({ children }: { children: React.ReactNode })
   ]
 
   return (
-    <div className="min-h-screen flex flex-col">
-      <header className="border-b sticky top-0 bg-background z-10">
-        <div className="container flex items-center justify-between h-14">
-          <Link href="/guest/menu" className="font-semibold">
+    <div className="flex flex-col">
+      <header className="border-b sticky top-0 pt-2 bg-background z-10 px-2 pb-2">
+        <div className="flex items-center justify-between">
+          <Link href="/guest/menu" className="font-semibold flex">
             {localStorage.getItem('guestName')}
           </Link>
           <nav className="flex items-center">

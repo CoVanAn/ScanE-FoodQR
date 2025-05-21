@@ -5,24 +5,30 @@ import { useLocalStorage } from './useLocalStorage'
 // Custom hook để quản lý giỏ hàng
 export function useCart() {
   const [cartItems, setCartItems] = useLocalStorage<GuestCreateOrdersBodyType>('cart-items', [])
-  
+
   // Thêm món ăn vào giỏ hàng
-  const addToCart = (dishId: number, quantity: number) => {
+  const addToCart = (orders: { dishId: number; quantity: number }[]) => {
     setCartItems((prevItems) => {
-      const existingItemIndex = prevItems.findIndex((item) => item.dishId === dishId)
+      let newItems = [...prevItems]
       
-      if (existingItemIndex >= 0) {
-        // Cập nhật số lượng nếu món ăn đã có trong giỏ
-        const newItems = [...prevItems]
-        newItems[existingItemIndex] = {
-          ...newItems[existingItemIndex],
-          quantity: newItems[existingItemIndex].quantity + quantity
+      // Xử lý tất cả các món một lần
+      orders.forEach(order => {
+        const { dishId, quantity } = order
+        const existingItemIndex = newItems.findIndex(item => item.dishId === dishId)
+
+        if (existingItemIndex >= 0) {
+          // Cập nhật số lượng nếu món ăn đã có trong giỏ
+          newItems[existingItemIndex] = {
+            ...newItems[existingItemIndex],
+            quantity: newItems[existingItemIndex].quantity + quantity
+          }
+        } else {
+          // Thêm món ăn mới vào giỏ
+          newItems.push({ dishId, quantity })
         }
-        return newItems
-      } else {
-        // Thêm món ăn mới vào giỏ
-        return [...prevItems, { dishId, quantity }]
-      }
+      })
+
+      return newItems
     })
   }
 
@@ -32,12 +38,12 @@ export function useCart() {
       if (quantity <= 0) {
         return prevItems.filter((item) => item.dishId !== dishId)
       }
-      
+
       const index = prevItems.findIndex((item) => item.dishId === dishId)
       if (index === -1) {
         return [...prevItems, { dishId, quantity }]
       }
-      
+
       const newItems = [...prevItems]
       newItems[index] = { ...newItems[index], quantity }
       return newItems
@@ -56,7 +62,7 @@ export function useCart() {
 
   // Tính tổng số lượng món trong giỏ
   const cartCount = cartItems.reduce((total, item) => total + item.quantity, 0)
-  
+
   return {
     cartItems,
     setCartItems,
