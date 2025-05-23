@@ -3,9 +3,11 @@ import { Input } from '@/components/ui/input'
 import { Minus, Plus } from 'lucide-react'
 
 export default function Quantity({
+  hidden = false,
   onChange,
   value
 }: {
+  hidden?: boolean
   onChange: (value: number) => void
   value: number
 }) {
@@ -33,7 +35,10 @@ export default function Quantity({
           onChange(numberValue)
         }}
       />
-      <Button className='h-6 w-6 p-0' onClick={() => onChange(value + 1)}>
+      <Button
+        disabled={hidden}
+        className='h-6 w-6 p-0'
+        onClick={() => onChange(value + 1)}>
         <Plus className='w-3 h-3' />
       </Button>
     </div>

@@ -9,7 +9,9 @@ const indicatorApiRequest = {
                 queryString.stringify({
                     fromDate: queryParams.fromDate?.toISOString(),
                     toDate: queryParams.toDate?.toISOString()
-                })),
+                },
+                {encode: true}
+            )),
 }
 
 export default indicatorApiRequest;

@@ -18,7 +18,7 @@ export default function MenuOrder() {
   const [orders, setOrders] = useState<GuestCreateOrdersBodyType>([])
   const router = useRouter()
   const { addToCart, cartItems, cartCount } = useCart()
-    // React 19 hoặc Next.js 15 thì không cần dùng useMemo chỗ này
+  // React 19 hoặc Next.js 15 thì không cần dùng useMemo chỗ này
   const totalPrice = useMemo(() => {
     return dishes.reduce((result, dish) => {
       const order = orders.find((order) => order.dishId === dish.id)
@@ -41,14 +41,14 @@ export default function MenuOrder() {
     })
   }
   const handleAddToCart = () => {
-   
+
     addToCart(orders)
     // Hiển thị thông báo thành công
     toast.success(`Đã thêm ${orders.length} món vào giỏ hàng`)
-    
+
     // Reset lại danh sách đã chọn
     setOrders([])
-    
+
     // Điều hướng đến trang giỏ hàng
     router.push('/guest/cart')
   }
@@ -61,15 +61,17 @@ export default function MenuOrder() {
             key={dish.id}
             className={
               cn('flex gap-3 px-6 sm:px-0', {
-              'pointer-events-none': dish.status === DishStatus.Unavailable
-            })}
-            
+                'pointer-events-none': dish.status === DishStatus.Unavailable
+              })}
+
           >
             <div className='flex-shrink-0 relative '>
               {dish.status === DishStatus.Unavailable && (
-                <span className='absolute inset-0 flex items-center justify-center text-sm'>
-                  Hết hàng
-                </span>
+                <div className='absolute inset-0 bg-black/70 rounded-md' >
+                  <span className='absolute inset-0 flex items-center justify-center text-sm'>
+                    Hết hàng
+                  </span>
+                </div>
               )}
               <Image
                 src={dish.image}
@@ -86,15 +88,16 @@ export default function MenuOrder() {
               <p className='text-xs font-semibold'>
                 {formatCurrency(dish.price)}
               </p>
-            </div>          
-              <div className='flex-shrink-0 ml-auto flex justify-center items-center'>
-              <Quantity
-                onChange={(value) => handleQuantityChange(dish.id, value)}
-                value={
-                  orders.find((order) => order.dishId === dish.id)?.quantity ??
-                  0
-                }
-              />
+            </div>
+            <div className='flex-shrink-0 ml-auto flex justify-center items-center'>
+                <Quantity
+                  hidden={dish.status === DishStatus.Unavailable}
+                  onChange={(value) => handleQuantityChange(dish.id, value)}
+                  value={
+                    orders.find((order) => order.dishId === dish.id)?.quantity ??
+                    0
+                  }
+                />
             </div>
           </div>
         ))}      <div className='sticky bottom-0 flex flex-col gap-2'>
@@ -106,7 +109,7 @@ export default function MenuOrder() {
           <span>Thêm vào giỏ hàng · {orders.length} món</span>
           <span>{formatCurrency(totalPrice)}</span>
         </Button>
-        
+
         <Button
           className='w-full h-12'
           variant="outline"
