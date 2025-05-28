@@ -14,6 +14,7 @@ import {
 import Image from 'next/image'
 import {useEffect, useMemo } from 'react'
 import { useAppContext } from '@/components/app-provider'
+import { Button } from '@/components/ui/button'
 
 export default function OrdersCart() {    
   const {socket} = useAppContext()
@@ -154,8 +155,11 @@ export default function OrdersCart() {
           <span>{formatCurrency(waitingForPaying.price)}</span>
         </div>
       </div>
+         <Button>
+          Thanh toán
+        </Button>
       <div>
-        Bấm để thanh toán đơn hàng
+     
       </div>
     </div>
   )

@@ -5,7 +5,6 @@ import { RoleType } from '@/types/jwt.types'
 import {QueryClient,
     QueryClientProvider,
 } from '@tanstack/react-query'
-import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
 import React, {  useCallback, useEffect, useRef } from 'react'
 import { createContext, useContext, useState } from 'react'
 import RefreshToken from './refresh-token'
@@ -82,7 +81,7 @@ export default function AppProvider({ children }: Readonly<{
                 <RefreshToken />
                 <ListenLogoutSocket />
                 {/* <ReactQueryDevtools initialIsOpen={false} /> */}
-                <ReactQueryDevtools initialIsOpen={false} />
+                {/* Đã xóa ReactQueryDevtools để ẩn icon tanstack */}
             </QueryClientProvider>
         </AppContext>
     )

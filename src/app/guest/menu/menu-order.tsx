@@ -11,6 +11,8 @@ import { useRouter } from 'next/navigation'
 import { DishStatus } from '@/constants/type'
 import { useCart } from '@/lib/hooks/useCart'
 import { toast } from 'sonner'
+import { useCategoryListQuery } from '@/queries/useCategory'
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 
 export default function MenuOrder() {
   const { data } = useDishListQuery()
@@ -18,6 +20,9 @@ export default function MenuOrder() {
   const [orders, setOrders] = useState<GuestCreateOrdersBodyType>([])
   const router = useRouter()
   const { addToCart, cartItems, cartCount } = useCart()
+  const { data: categoryData } = useCategoryListQuery()
+  const categories = categoryData?.payload.data ?? []
+  const [selectedCategory, setSelectedCategory] = useState<string | null>(null)
   // React 19 hoặc Next.js 15 thì không cần dùng useMemo chỗ này
   const totalPrice = useMemo(() => {
     return dishes.reduce((result, dish) => {
@@ -26,6 +31,13 @@ export default function MenuOrder() {
       return result + order.quantity * dish.price
     }, 0)
   }, [dishes, orders])
+
+  // Lọc món ăn theo category
+  const filteredDishes = useMemo(() => {
+    if (!selectedCategory) return dishes
+    return dishes.filter((dish) => String(dish.categoryId) === selectedCategory)
+  }, [dishes, selectedCategory])
+
   const handleQuantityChange = (dishId: number, quantity: number) => {
     setOrders((prevOrders) => {
       if (quantity === 0) {
@@ -54,7 +66,42 @@ export default function MenuOrder() {
   }
   return (
     <>
-      {dishes
+      <div className="flex flex-col items-center gap-2 mb-6">
+        <div className="w-full flex flex-col items-center gap-2">
+          <div className="flex gap-2 items-center w-full justify-center">
+            <Select
+              value={selectedCategory || ''}
+              onValueChange={(value) => setSelectedCategory(value === '' ? null : value)}
+            >
+              <SelectTrigger className="w-56 border-primary shadow-sm focus:ring-2 focus:ring-primary/50">
+                <SelectValue placeholder="Chọn danh mục..." />
+              </SelectTrigger>
+              <SelectContent className="max-h-60 overflow-auto">
+                {/* <SelectItem value="">Tất cả các món</SelectItem> */}
+                {categories.map((category) => (
+                  <SelectItem key={category.id} value={String(category.id)}>
+                    {category.name}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+            {selectedCategory && (
+              <Button
+                size="icon"
+                variant="ghost"
+                className="border border-primary text-primary hover:bg-primary/10 transition-colors"
+                title="Bỏ lọc danh mục"
+                onClick={() => setSelectedCategory(null)}
+              >
+                <svg width="18" height="18" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M6 6L14 14M6 14L14 6" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
+                </svg>
+              </Button>
+            )}
+          </div>
+        </div>
+      </div>
+      {filteredDishes
         .filter((dish) => dish.status !== DishStatus.Hidden)
         .map((dish) => (
           <div
