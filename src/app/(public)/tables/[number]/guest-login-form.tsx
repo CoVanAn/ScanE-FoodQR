@@ -58,7 +58,7 @@ export default function GuestLoginForm() {
   return (
     <Card className='mx-auto max-w-sm'>
       <CardHeader>
-        <CardTitle className='text-2xl'>Đăng nhập gọi món</CardTitle>
+        <CardTitle className='text-2xl'>Điền tên để gọi món</CardTitle>
       </CardHeader>
       <CardContent>
         <Form {...form}>
