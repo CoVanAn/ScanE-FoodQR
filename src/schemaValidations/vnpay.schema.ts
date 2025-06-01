@@ -8,3 +8,18 @@ export const CreatePaymentBody = z.object({
 });
 
 export type CreatePaymentBodyType = z.infer<typeof CreatePaymentBody>;
+
+// Schema cho response từ API tạo URL thanh toán
+export const PaymentResponse = z.object({
+  message: z.string(),
+  data: z.object({
+    paymentUrl: z.string(),
+    transactionId: z.string()
+  })
+});
+
+export type PaymentResponseType = z.infer<typeof PaymentResponse>;
+
+// Schema cho thông tin trạng thái thanh toán
+export const PaymentStatus = z.enum(['success', 'failed', 'pending']);
+export type PaymentStatusType = z.infer<typeof PaymentStatus>;

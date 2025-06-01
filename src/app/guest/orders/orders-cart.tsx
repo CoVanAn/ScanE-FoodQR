@@ -4,7 +4,7 @@ import { Badge } from '@/components/ui/badge'
 import { toast } from 'sonner'
 import { OrderStatus } from '@/constants/type'
 // import socket from '@/lib/socket'
-import { formatCurrency, getVietnameseOrderStatus } from '@/lib/utils'
+import { formatCurrency, getVietnameseOrderStatus, handleErrorApi } from '@/lib/utils'
 // import { useGuestGetOrderListQuery } from '@/queries/useGuest'
 import { useGuestGetOrderListQuery } from '@/queries/useGuest'
 import {
@@ -14,11 +14,13 @@ import {
 import Image from 'next/image'
 import {useEffect, useMemo } from 'react'
 import { useAppContext } from '@/components/app-provider'
+import { useCreatePaymentMutation } from '@/queries/useVnpay'
 import { Button } from '@/components/ui/button'
 
 export default function OrdersCart() {    
   const {socket} = useAppContext()
   const { data, refetch } = useGuestGetOrderListQuery()
+  const { mutateAsync: createPaymentMutate, isPending: isPaymentLoading } = useCreatePaymentMutation()
   // console.log('data', data?.payload.data)
   const orders = useMemo(() => data?.payload.data ?? [], [data])
   console.log('orders', orders)
@@ -112,6 +114,42 @@ export default function OrdersCart() {
       socket?.off('payment', onPayment)
     }
   }, [refetch, socket])
+
+  // Hàm xử lý thanh toán VNPay
+  const handleVNPayPayment = async () => {
+    try {
+      if (waitingForPaying.quantity === 0) {
+        toast("Không có đơn hàng nào cần thanh toán");
+        return;
+      }
+
+      // Lấy danh sách orderIds cần thanh toán
+      const orderIds = orders
+        .filter(order => 
+          order.status === OrderStatus.Delivered || 
+          order.status === OrderStatus.Processing || 
+          order.status === OrderStatus.Pending
+        )
+        .map(order => order.id);
+
+      // Gọi API tạo URL thanh toán
+      const response = await createPaymentMutate({
+        amount: waitingForPaying.price,
+        orderInfo: "Thanh toán đơn hàng FoodScan",
+        orderIds: orderIds
+      });
+
+      // Nếu tạo URL thành công, chuyển hướng đến trang thanh toán
+      if (response.payload.data?.paymentUrl) {
+        window.location.href = response.payload.data.paymentUrl;
+      } else {
+        toast("Có lỗi khi tạo liên kết thanh toán");
+      }
+    } catch (error) {
+      handleErrorApi({ error });
+    }
+  };
+
   return (
     <div className='container py-4 space-y-4 px-6 sm:px-0'>
       {orders.map((order, index) => (
@@ -155,11 +193,18 @@ export default function OrdersCart() {
           <span>{formatCurrency(waitingForPaying.price)}</span>
         </div>
       </div>
-         <Button>
-          Thanh toán
+      <div className='space-y-4'>
+        <Button
+          onClick={handleVNPayPayment}
+          disabled={waitingForPaying.quantity === 0}
+          className="w-full flex justify-between items-center bg-blue-500 hover:bg-blue-600"
+        >
+          <div className="flex items-center">
+            <div className="bg-white text-blue-600 font-bold rounded-full w-8 h-8 flex items-center justify-center mr-2">VN</div>
+            <span>Thanh toán VNPay</span>
+          </div>
+          <span>{formatCurrency(waitingForPaying.price)}</span>
         </Button>
-      <div>
-     
       </div>
     </div>
   )

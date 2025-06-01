@@ -1,14 +1,12 @@
 import http from '@/lib/http'
 import {
-    CreatePaymentBody,
     CreatePaymentBodyType,
+    PaymentResponseType,
 } from '@/schemaValidations/vnpay.schema'
 
 const vnpayApiRequest = {
     createPayment: (body: CreatePaymentBodyType) =>
-        http.post<string>('vnpay/create-payment', body),
-    getPaymentStatus: () =>
-        http.get<string>(`vnpay/check-payment`),
+        http.post<PaymentResponseType>('vnpay/create-payment', body),
 }
 
 export default vnpayApiRequest
