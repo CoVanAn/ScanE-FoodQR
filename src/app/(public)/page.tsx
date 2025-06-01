@@ -25,18 +25,16 @@ export default async function Home() {
           quality={100}
           alt='Banner'
           className='absolute top-0 left-0 w-full h-full object-cover'
-        />
-        <div className='z-20 relative py-10 md:py-20 px-4 sm:px-10 md:px-20'>
-          <h1 className='text-center text-xl sm:text-2xl md:text-4xl lg:text-5xl font-bold'>
+        />        <div className='z-20 relative py-10 md:py-20 px-4 sm:px-10 md:px-20'>
+          <h2 className='text-center text-xl sm:text-2xl md:text-4xl lg:text-5xl font-bold text-white dark:text-white'>
             Nhà hàng Cồ An
-          </h1>
-          <p className='text-center text-sm sm:text-base mt-4'>
+          </h2>
+          <p className='text-center text-sm sm:text-base mt-4 text-white/90 dark:text-white/90'>
             Vị ngon, trọn khoảnh khắc
           </p>
         </div>
-      </section>
-      <section className='space-y-10 py-16'>
-        <h2 className='text-center text-2xl font-bold'>Đa dạng các món ăn</h2>
+      </section>      <section className='space-y-10 py-16'>
+        <h2 className='text-center text-2xl font-bold text-foreground dark:text-foreground'>Đa dạng các món ăn</h2>
         <div className='grid grid-cols-1 sm:grid-cols-2 gap-10'>
           {dishList.map((dish) => (
             <div className='flex gap-4 w' key={dish.id}>
