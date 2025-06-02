@@ -24,11 +24,12 @@ import {
   formatCurrency,
   formatDateTimeToLocaleString,
   getVietnameseOrderStatus,
+  getVietnamesePaymentStatus,
   simpleMatchText
 } from '@/lib/utils'
 import Image from 'next/image'
 import { Badge } from '@/components/ui/badge'
-import { OrderStatus, OrderStatusValues } from '@/constants/type'
+import { OrderStatus, OrderStatusValues, PaymentStatus, PaymentStatusValues } from '@/constants/type'
 import {
   Popover,
   PopoverContent,
@@ -143,15 +144,18 @@ const orderTableColumns: ColumnDef<OrderItem>[] = [
         </div>
       </div>
     )
-  },
-  {
+  }, {
     accessorKey: 'status',
     header: 'Trạng thái',
     cell: function Cell({ row }) {
       const { changeStatus } = useContext(OrderTableContext)
+      // const isPaid = row.original.payment === PaymentStatus.Paid;
+
       const changeOrderStatus = async (
         status: (typeof OrderStatusValues)[number]
       ) => {
+        // if (isPaid) return; // Prevent changes if paid
+
         changeStatus({
           orderId: row.original.id,
           dishId: row.original.dishSnapshot.dishId!,
@@ -166,6 +170,7 @@ const orderTableColumns: ColumnDef<OrderItem>[] = [
           }}
           defaultValue={OrderStatus.Pending}
           value={row.getValue('status')}
+        // disabled={isPaid}
         >
           <SelectTrigger className='w-[140px]'>
             <SelectValue placeholder='Theme' />
@@ -178,6 +183,53 @@ const orderTableColumns: ColumnDef<OrderItem>[] = [
             ))}
           </SelectContent>
         </Select>
+      )
+    }
+  }, {
+    accessorKey: 'payment',
+    header: 'Thanh toán',
+    cell: function Cell({ row }) {
+      const { changePaymentStatus } = useContext(OrderTableContext)
+      const isPaid = row.original.payment === PaymentStatus.Paid;
+
+      const changePayment = async (
+        payment: (typeof PaymentStatusValues)[number]
+      ) => {
+        // Allow changing from paid to unpaid, but once paid, no other fields can be edited
+        changePaymentStatus({
+          orderId: row.original.id,
+          dishId: row.original.dishSnapshot.dishId!,
+          payment: payment,
+          quantity: row.original.quantity
+        })
+      }
+      return (
+        <div
+        className={`${isPaid ?
+         'cursor-not-allowed border-2 border-green-500 w-[160px] rounded-lg' : ''}`}>
+          <Select
+            onValueChange={(value: (typeof PaymentStatusValues)[number]) => {
+              changePayment(value)
+            }}
+            defaultValue={PaymentStatus.Unpaid}
+            value={row.getValue('payment')}
+            disabled={isPaid}
+          >
+            <SelectTrigger className='w-[160px]'>
+              <SelectValue placeholder='Thanh toán'/>
+            </SelectTrigger>
+            <SelectContent >
+              {PaymentStatusValues.map((status) => (
+                <SelectItem
+                  key={status}
+                  value={status}
+                >
+                  {getVietnamesePaymentStatus(status)}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
       )
     }
   },
@@ -201,32 +253,40 @@ const orderTableColumns: ColumnDef<OrderItem>[] = [
         </div>
       </div>
     )
-  },
-  {
+  }, {
     id: 'actions',
     enableHiding: false,
     cell: function Actions({ row }) {
       const { setOrderIdEdit } = useContext(OrderTableContext)
+      const isPaid = row.original.payment === PaymentStatus.Paid;
+
       const openEditOrder = () => {
-        requestAnimationFrame(()=> {
+        if (isPaid) return; // Prevent editing if paid
+        requestAnimationFrame(() => {
           setOrderIdEdit(row.original.id)
         })
       }
 
       return (
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant='ghost' className='h-8 w-8 p-0'>
-              <span className='sr-only'>Open menu</span>
-              <DotsHorizontalIcon className='h-4 w-4' />
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align='end'>
-            <DropdownMenuLabel>Actions</DropdownMenuLabel>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem onClick={openEditOrder}>Sửa</DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
+        // <DropdownMenu>
+        //   <DropdownMenuTrigger asChild>
+        <Button variant='ghost' className='h-8 w-8 p-0' disabled={isPaid}
+          onClick={openEditOrder} title='Sửa đơn hàng'>
+          <DotsHorizontalIcon className={`h-4 w-4 `} />
+        </Button>
+        //   </DropdownMenuTrigger>
+        //   <DropdownMenuContent align='end'>
+        //     {/* <DropdownMenuLabel>Actions</DropdownMenuLabel> */}
+        //     {/* <DropdownMenuSeparator /> */}
+        //     {isPaid ? (
+        //       <DropdownMenuItem disabled className="opacity-60 cursor-not-allowed">
+        //         Đã thanh toán không thể sửa
+        //       </DropdownMenuItem>
+        //     ) : (
+        //       <DropdownMenuItem onClick={openEditOrder}>Sửa</DropdownMenuItem>
+        //     )}
+        //   </DropdownMenuContent>
+        // </DropdownMenu>
       )
     }
   }

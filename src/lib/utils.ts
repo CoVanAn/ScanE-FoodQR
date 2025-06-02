@@ -3,7 +3,7 @@ import { EntityError } from '@/lib/http'
 import { type ClassValue, clsx } from 'clsx'
 import { UseFormSetError } from 'react-hook-form'
 import { twMerge } from 'tailwind-merge'
-import { DishStatus, OrderStatus, Role, TableStatus } from '@/constants/type'
+import { DishStatus, OrderStatus, PaymentStatus, Role, TableStatus } from '@/constants/type'
 import guestApiRequest from '@/apiRequests/guest'
 import authApiRequest from '@/apiRequests/auth'
 import jwt from 'jsonwebtoken'
@@ -175,14 +175,25 @@ export const getVietnameseOrderStatus = (
   switch (status) {
     case OrderStatus.Delivered:
       return 'Đã phục vụ'
-    case OrderStatus.Paid:
-      return 'Đã thanh toán'
     case OrderStatus.Pending:
       return 'Chờ xử lý'
     case OrderStatus.Processing:
       return 'Đang nấu'
     default:
       return 'Từ chối'
+  }
+}
+
+export const getVietnamesePaymentStatus = (
+  status: (typeof PaymentStatus)[keyof typeof PaymentStatus]
+) => {
+  switch (status) {
+    case PaymentStatus.Paid:
+      return 'Đã thanh toán'
+    case PaymentStatus.Unpaid:
+      return 'Chưa thanh toán'
+    default:
+      return 'Chưa thanh toán'
   }
 }
 
@@ -258,6 +269,11 @@ export const OrderStatusIcon = {
   [OrderStatus.Processing]: CookingPot,
   [OrderStatus.Rejected]: BookX,
   [OrderStatus.Delivered]: Truck,
-  [OrderStatus.Paid]: HandCoins
+}
+
+// Add payment status icons
+export const PaymentStatusIcon = {
+  [PaymentStatus.Paid]: HandCoins,
+  [PaymentStatus.Unpaid]: BookX
 }
 

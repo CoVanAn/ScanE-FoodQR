@@ -2,9 +2,9 @@
 
 import { Badge } from '@/components/ui/badge'
 import { toast } from 'sonner'
-import { OrderStatus } from '@/constants/type'
+import { OrderStatus, PaymentStatus } from '@/constants/type'
 // import socket from '@/lib/socket'
-import { formatCurrency, getVietnameseOrderStatus, handleErrorApi } from '@/lib/utils'
+import { formatCurrency, getVietnameseOrderStatus, getVietnamesePaymentStatus, handleErrorApi } from '@/lib/utils'
 // import { useGuestGetOrderListQuery } from '@/queries/useGuest'
 import { useGuestGetOrderListQuery } from '@/queries/useGuest'
 import {
@@ -18,20 +18,27 @@ import { useCreatePaymentMutation } from '@/queries/useVnpay'
 import { Button } from '@/components/ui/button'
 
 export default function OrdersCart() {    
-  const {socket} = useAppContext()
+  const { socket } = useAppContext()
   const { data, refetch } = useGuestGetOrderListQuery()
   const { mutateAsync: createPaymentMutate, isPending: isPaymentLoading } = useCreatePaymentMutation()
-  // console.log('data', data?.payload.data)
-  const orders = useMemo(() => data?.payload.data ?? [], [data])
-  console.log('orders', orders)
+  // console.log('data', data?.payload.data)  
+  const orders = useMemo(() => data?.payload.data ?? [], [data]);
+  // console.log('orders', orders);
+    type OrderSummary = {
+    price: number;
+    quantity: number;
+  };
+  
+  type Result = {
+    waitingForPaying: OrderSummary;
+    paid: OrderSummary;
+  };
+
   const { waitingForPaying, paid } = useMemo(() => {
-    return orders.reduce(
-      (result, order) => {
-        if (
-          order.status === OrderStatus.Delivered ||
-          order.status === OrderStatus.Processing ||
-          order.status === OrderStatus.Pending
-        ) {
+    return orders.reduce<Result>(
+      (result: Result, order: any) => {
+        // Using payment field instead of order status to determine if order is paid
+        if (order.payment === PaymentStatus.Unpaid) {
           return {
             ...result,
             waitingForPaying: {
@@ -42,7 +49,7 @@ export default function OrdersCart() {
             }
           }
         }
-        if (order.status === OrderStatus.Paid) {
+        if (order.payment === PaymentStatus.Paid) {
           return {
             ...result,
             paid: {
@@ -79,18 +86,26 @@ export default function OrdersCart() {
 
     function onDisconnect() {
       console.log('disconnect')
-    }
-
-    function onUpdateOrder(data: UpdateOrderResType['data']) {
+    }    function onUpdateOrder(data: UpdateOrderResType['data']) {
       const {
         dishSnapshot: { name },
-        quantity
+        quantity,
+        payment,
+        status
       } = data
-      toast('',{
-        description: `Món ${name} (SL: ${quantity}) vừa được cập nhật sang trạng thái "${getVietnameseOrderStatus(
-          data.status
-        )}"`
-      })
+      
+      // Create description text that includes both status and payment status
+      let description = `Món ${name} (SL: ${quantity}) vừa được cập nhật `;
+      
+      // Add order status information
+      description += `trạng thái "${getVietnameseOrderStatus(status)}"`;
+      
+      // Add payment status information if it's provided
+      if (payment) {
+        description += ` và thanh toán "${getVietnamesePaymentStatus(payment)}"`;
+      }
+      
+      toast('', { description })
       refetch()
     }
 
@@ -114,27 +129,20 @@ export default function OrdersCart() {
       socket?.off('payment', onPayment)
     }
   }, [refetch, socket])
-
   // Hàm xử lý thanh toán VNPay
   const handleVNPayPayment = async () => {
     try {
       if (waitingForPaying.quantity === 0) {
         toast("Không có đơn hàng nào cần thanh toán");
         return;
-      }
-
-      // Lấy danh sách orderIds cần thanh toán
+      }      // Lấy danh sách orderIds cần thanh toán - sử dụng payment status thay vì order status
       const orderIds = orders
-        .filter(order => 
-          order.status === OrderStatus.Delivered || 
-          order.status === OrderStatus.Processing || 
-          order.status === OrderStatus.Pending
-        )
-        .map(order => order.id);
+        .filter((order: any) => order.payment === PaymentStatus.Unpaid)
+        .map((order: any) => order.id);
 
       // Gọi API tạo URL thanh toán
       const response = await createPaymentMutate({
-        amount: waitingForPaying.price,
+        amount: waitingForPaying.price/100,
         orderInfo: "Thanh toán đơn hàng FoodScan",
         orderIds: orderIds
       });
@@ -152,7 +160,7 @@ export default function OrdersCart() {
 
   return (
     <div className='container py-4 space-y-4 px-6 sm:px-0'>
-      {orders.map((order, index) => (
+      {orders.map((order: any, index: number) => (
         <div key={order.id} className='flex gap-4'>
           {/* <div className='text-sm font-semibold'>{index + 1}</div> */}
           <div className='flex-shrink-0 relative'>
@@ -164,17 +172,19 @@ export default function OrdersCart() {
               quality={100}
               className='object-cover w-[80px] h-[80px] rounded-md'
             />
-          </div>
-          <div className='space-y-1'>
+          </div>          <div className='space-y-1'>
             <h3 className='text-sm'>{order.dishSnapshot.name}</h3>
             <div className='text-xs font-semibold'>
               {formatCurrency(order.dishSnapshot.price)} x{' '}
               <Badge className='px-1'>{order.quantity}</Badge>
             </div>
           </div>
-          <div className='flex-shrink-0 ml-auto flex justify-center items-center'>
+          <div className='flex-shrink-0 ml-auto flex flex-col gap-4 justify-center items-center'>
             <Badge variant={'outline'}>
               {getVietnameseOrderStatus(order.status)}
+            </Badge>           
+            <Badge variant='outline' className={order.payment === PaymentStatus.Paid ? 'bg-green-500 text-white' : 'bg-red-500 text-white'}>
+              {getVietnamesePaymentStatus(order.payment)}
             </Badge>
           </div>
         </div>

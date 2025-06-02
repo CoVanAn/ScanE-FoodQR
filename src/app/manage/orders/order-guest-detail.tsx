@@ -1,14 +1,16 @@
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
-import { OrderStatus } from '@/constants/type'
+import { OrderStatus, PaymentStatus } from '@/constants/type'
 import {
   OrderStatusIcon,
+  PaymentStatusIcon,
   formatCurrency,
   formatDateTimeToLocaleString,
   formatDateTimeToTimeString,
   getVietnameseOrderStatus,
+  getVietnamesePaymentStatus,
   handleErrorApi
-} from '@/lib/utils'
+}from '@/lib/utils'
 import { usePayForGuestMutation } from '@/queries/useOrder'
 import {
   GetOrdersResType,
@@ -27,16 +29,15 @@ export default function OrderGuestDetail({
   guest: Guest
   orders: Orders
   onPaySuccess?: (data: PayGuestOrdersResType) => void
-}) {
-  const ordersFilterToPurchase = guest
+}) {  const ordersFilterToPurchase = guest
     ? orders.filter(
         (order) =>
-          order.status !== OrderStatus.Paid &&
+          order.payment !== PaymentStatus.Paid &&
           order.status !== OrderStatus.Rejected
       )
     : []
   const purchasedOrderFilter = guest
-    ? orders.filter((order) => order.status === OrderStatus.Paid)
+    ? orders.filter((order) => order.payment === PaymentStatus.Paid)
     : []
   const payForGuestMutation = usePayForGuestMutation()
 
@@ -87,12 +88,12 @@ export default function OrderGuestDetail({
                 )}
                 {order.status === OrderStatus.Rejected && (
                   <OrderStatusIcon.Rejected className='w-4 h-4 text-red-400' />
-                )}
-                {order.status === OrderStatus.Delivered && (
+                )}              
+                  {order.status === OrderStatus.Delivered && (
                   <OrderStatusIcon.Delivered className='w-4 h-4' />
                 )}
-                {order.status === OrderStatus.Paid && (
-                  <OrderStatusIcon.Paid className='w-4 h-4 text-yellow-400' />
+                {order.payment === PaymentStatus.Paid && (
+                  <PaymentStatusIcon.paid className='w-4 h-4 text-yellow-400' />
                 )}
               </span>
               <Image

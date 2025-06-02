@@ -1,14 +1,14 @@
 import { Fragment, useState } from 'react'
 import { Users } from 'lucide-react'
 import { Separator } from '@/components/ui/separator'
-import { OrderStatusIcon, cn, getVietnameseOrderStatus } from '@/lib/utils'
+import { OrderStatusIcon, cn, getVietnameseOrderStatus, getVietnamesePaymentStatus } from '@/lib/utils'
 import {
   Tooltip,
   TooltipContent,
   TooltipProvider,
   TooltipTrigger
 } from '@/components/ui/tooltip'
-import { OrderStatus, OrderStatusValues } from '@/constants/type'
+import { OrderStatus, OrderStatusValues, PaymentStatus, PaymentStatusValues } from '@/constants/type'
 import { TableListResType } from '@/schemaValidations/table.schema'
 import { Badge } from '@/components/ui/badge'
 import {
@@ -24,34 +24,6 @@ import {
 } from '@/components/ui/dialog'
 import OrderGuestDetail from '@/app/manage/orders/order-guest-detail'
 
-// Ví dụ:
-// const statics: Statics = {
-//   status: {
-//     Pending: 1,
-//     Processing: 2,
-//     Delivered: 3,
-//     Paid: 5,
-//     Rejected: 0
-//   },
-//   table: {
-//     1: { // Bàn số 1
-//       20: { // Guest 20
-//         Pending: 1,
-//         Processing: 2,
-//         Delivered: 3,
-//         Paid: 5,
-//         Rejected: 0
-//       },
-//       21: { // Guest 21
-//         Pending: 1,
-//         Processing: 2,
-//         Delivered: 3,
-//         Paid: 5,
-//         Rejected: 0
-//       }
-//     }
-//   }
-// }
 export default function OrderStatics({
   statics,
   tableList,
@@ -108,12 +80,11 @@ export default function OrderStatics({
           const tableNumber: number = table.number
           const tableStatics: Record<number, StatusCountObject> | undefined =
             statics.table[tableNumber]
-          let isEmptyTable = true
+          let isEmptyTable = true    
           let countObject: StatusCountObject = {
             Pending: 0,
             Processing: 0,
             Delivered: 0,
-            Paid: 0,
             Rejected: 0
           }
           const servingGuestCount = Object.values(
@@ -137,7 +108,7 @@ export default function OrderStatics({
                   countObject.Processing + (guestStatics.Processing ?? 0),
                 Delivered:
                   countObject.Delivered + (guestStatics.Delivered ?? 0),
-                Paid: countObject.Paid + (guestStatics.Paid ?? 0),
+                // Paid: countObject.Paid + (guestStatics.Paid ?? 0),
                 Rejected: countObject.Rejected + (guestStatics.Rejected ?? 0)
               }
             }
@@ -233,13 +204,33 @@ export default function OrderStatics({
             </div>
           )
         })}
-      </div>
-      <div className='flex justify-start items-end gap-4 flex-wrap py-4'>
-        {OrderStatusValues.map((status) => (
-          <Badge variant='secondary' key={status}>
-            {getVietnameseOrderStatus(status)}: {statics.status[status] ?? 0}
-          </Badge>
-        ))}
+      </div>    
+      <div className='flex flex-col gap-4 py-4'>
+        <div className='flex flex-col gap-1'>
+          <div className='text-sm font-medium'>Trạng thái đơn:</div>
+          <div className='flex flex-wrap gap-2'>
+            {OrderStatusValues.map((status) => (
+              <Badge variant='secondary' key={status}>
+                {getVietnameseOrderStatus(status)}: {statics.status[status] ?? 0}
+              </Badge>
+            ))}
+          </div>
+        </div>
+        
+        <div className='flex flex-col gap-1'>
+          <div className='text-sm font-medium'>Trạng thái thanh toán:</div>
+          <div className='flex flex-wrap gap-2'>
+            {PaymentStatusValues.map((status) => (
+              <Badge 
+                variant={status === PaymentStatus.Paid ? 'default' : 'outline'} 
+                key={status}
+                className={status === PaymentStatus.Paid ? 'bg-green-500 hover:bg-green-600' : ''}
+              >
+                {getVietnamesePaymentStatus(status)}: {statics.payment?.[status] ?? 0}
+              </Badge>
+            ))}
+          </div>
+        </div>
       </div>
     </Fragment>
   )

@@ -17,7 +17,7 @@ export default function CartPage() {
   const dishes = useMemo(() => data?.payload.data ?? [], [data])
   const { cartItems, setCartItems, updateQuantity } = useCart()
   const { mutateAsync } = useGuestOrderMutation()
-  
+
   // Tính tổng giá trị đơn hàng
   const totalPrice = useMemo(() => {
     return dishes.reduce((result, dish) => {
@@ -30,10 +30,10 @@ export default function CartPage() {
   const handleQuantityChange = (dishId: number, quantity: number) => {
     updateQuantity(dishId, quantity)
   }
-  
+
   // Xử lý đặt hàng
   const handleOrder = async () => {
-    try {      
+    try {
       await mutateAsync(cartItems)
       // Xóa giỏ hàng sau khi đặt hàng thành công
       setCartItems([])
@@ -56,7 +56,7 @@ export default function CartPage() {
   return (
     <div className="container py-4 space-y-4 px-6 sm:px-0">
       <h1 className="text-2xl font-bold">Giỏ hàng của bạn</h1>
-      
+
       {cartItems.length === 0 ? (
         <div className="text-center py-12">
           <p className="mb-4">Giỏ hàng của bạn đang trống</p>
@@ -88,7 +88,8 @@ export default function CartPage() {
                     <p className="text-sm font-semibold">{formatCurrency(dish.price)}</p>
                   </div>
 
-                  <div className="flex-shrink-0 flex flex-col items-end justify-between">                    <Quantity
+                  <div className="flex-shrink-0 flex flex-col items-end justify-between">
+                    <Quantity
                       onChange={(value) => handleQuantityChange(item.dishId, value)}
                       value={item.quantity}
                     />

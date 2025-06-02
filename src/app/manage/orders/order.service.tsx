@@ -1,5 +1,5 @@
-import { OrderObjectByGuestID, ServingGuestByTableNumber, Statics } from '@/app/manage/orders/order-table'
-import { OrderStatus } from '@/constants/type'
+import { OrderObjectByGuestID, PaymentStatusCountObject, ServingGuestByTableNumber, Statics } from '@/app/manage/orders/order-table'
+import { OrderStatus, PaymentStatus, PaymentStatusValues } from '@/constants/type'
 import { GetOrdersResType } from '@/schemaValidations/order.schema'
 import { useMemo } from 'react'
 
@@ -10,15 +10,19 @@ export const useOrderService = (orderList: GetOrdersResType['data']) => {
         Pending: 0,
         Processing: 0,
         Delivered: 0,
-        Paid: 0,
         Rejected: 0
+      },
+      payment: {
+        unpaid: 0,
+        paid: 0
       },
       table: {}
     }
     const orderObjectByGuestId: OrderObjectByGuestID = {}
-    const guestByTableNumber: ServingGuestByTableNumber = {}
-    orderList.forEach((order) => {
+    const guestByTableNumber: ServingGuestByTableNumber = {}   
+     orderList.forEach((order) => {
       statics.status[order.status] = statics.status[order.status] + 1
+      statics.payment[order.payment] = statics.payment[order.payment] + 1
       // Nếu table và guest chưa bị xóa
       if (order.tableNumber !== null && order.guestId !== null) {
         if (!statics.table[order.tableNumber]) {
