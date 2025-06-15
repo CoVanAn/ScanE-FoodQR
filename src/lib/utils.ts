@@ -277,3 +277,14 @@ export const PaymentStatusIcon = {
   [PaymentStatus.Unpaid]: BookX
 }
 
+export const wrapServerApi = async <T>( apiFunction: () => Promise<T> ) => {
+    let result = null
+    try {
+      result = await apiFunction()
+    } catch (error: any) {
+      if(error.digest?.includes('NEXT_REDDIRECT')){
+        throw error
+      }
+    }
+    return result
+  }
