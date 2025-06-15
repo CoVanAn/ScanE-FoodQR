@@ -11,10 +11,11 @@ import { useParams, useRouter, useSearchParams } from 'next/navigation'
 import { use, useEffect } from 'react'
 import { useGuestLoginMutation } from '@/queries/useGuest'
 import { generateSocketInstance, handleErrorApi } from '@/lib/utils'
-import { useAppContext } from '@/components/app-provider'
+import { useAppStore } from '@/components/app-provider'
 
 export default function GuestLoginForm() {
-  const {setRole, setSocket} = useAppContext()
+  const setRole = useAppStore(state => state.setRole)
+  const setSocket = useAppStore(state => state.setSocket)
   const searchParams = useSearchParams()
   const params = useParams()
   const router = useRouter()

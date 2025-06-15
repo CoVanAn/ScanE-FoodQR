@@ -13,12 +13,13 @@ import {
 } from '@/schemaValidations/order.schema'
 import Image from 'next/image'
 import {useEffect, useMemo } from 'react'
-import { useAppContext } from '@/components/app-provider'
+import { useAppStore } from '@/components/app-provider'
 import { useCreatePaymentMutation } from '@/queries/useVnpay'
 import { Button } from '@/components/ui/button'
 
 export default function OrdersCart() {    
-  const { socket } = useAppContext()
+  // const { socket } = useAppStore()
+  const socket = useAppStore(state => state.socket)
   const { data, refetch } = useGuestGetOrderListQuery()
   const { mutateAsync: createPaymentMutate, isPending: isPaymentLoading } = useCreatePaymentMutation()
   // console.log('data', data?.payload.data)  

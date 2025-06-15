@@ -58,7 +58,7 @@ import {
   useUpdateOrderMutation
 } from '@/queries/useOrder'
 import { useTableListQuery } from '@/queries/useTable'
-import { useAppContext } from '@/components/app-provider'
+import { useAppStore } from '@/components/app-provider'
 // import socket from '@/lib/socket'
 
 export const OrderTableContext = createContext({
@@ -102,7 +102,7 @@ const initFromDate = startOfDay(new Date())
 const initToDate = endOfDay(new Date())
 
 export default function OrderTable() {
-  const {socket} = useAppContext()
+  const socket = useAppStore((state) => state.socket)
   const searchParam = useSearchParams()
   const [openStatusFilter, setOpenStatusFilter] = useState(false)
   const [openPaymentStatusFilter, setOpenPaymentStatusFilter] = useState(false)

@@ -13,7 +13,7 @@ import { generateSocketInstance, getAccessTokenFromLocalStorage, handleErrorApi,
 import { Eye, EyeOff } from "lucide-react"; // Import icon từ lucide-react
 import React, { useEffect } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
-import { useAppContext } from '@/components/app-provider'
+import { useAppStore } from '@/components/app-provider'
 // import socket from '@/lib/socket'
 // import { io } from 'socket.io-client'
 // import envConfig from '@/config'
@@ -22,7 +22,8 @@ export default function LoginForm() {
   const router = useRouter()
   const loginMutation = useLoginMutation()
   const searchParams = useSearchParams()
-  const {setRole, setSocket} = useAppContext()
+  const setRole = useAppStore(state => state.setRole)
+  const setSocket = useAppStore(state => state.setSocket)
   const clearToken = searchParams.get('clearToken')
   const form = useForm<LoginBodyType>({
     resolver: zodResolver(LoginBody),

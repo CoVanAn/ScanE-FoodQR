@@ -4,13 +4,15 @@ import { checkAndRefreshToken, getRoleFromClient } from '@/lib/utils'
 import { on } from 'events'
 import { usePathname, useRouter } from 'next/navigation'
 import { useEffect } from 'react'
-import { useAppContext } from './app-provider'
+import { useAppStore } from './app-provider'
 import { set } from 'date-fns'
 
 // Những page sau sẽ không check refesh token
 const UNAUTHENTICATED_PATH = ['/login', '/logout', '/refresh-token']
 export default function RefreshToken() {
-  const { socket, setSocket, disconnectSocket } = useAppContext()
+  const socket = useAppStore(state => state.socket)
+  const setSocket = useAppStore(state => state.setSocket)
+  const disconnectSocket = useAppStore(state => state.disconnectSocket)
   const pathname = usePathname()
   const router = useRouter()
   useEffect(() => {

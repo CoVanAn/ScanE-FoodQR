@@ -26,19 +26,21 @@ export default function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
-}>) {
-  return (
-    <html lang="en" suppressHydrationWarning
-      className={
-        cn(
-          // "bg-background text-foreground antialiased dark:bg-background-dark dark:text-foreground-dark",
-          `${geistSans.variable} ${geistMono.variable} antialiased`)}
+}>) {  return (
+    <html 
+      lang="en" 
+      suppressHydrationWarning
+      style={{ display: 'block' }}
+      className={cn(
+        // "bg-background text-foreground antialiased dark:bg-background-dark dark:text-foreground-dark",
+        `${geistSans.variable} ${geistMono.variable} antialiased`
+      )}
     >
-      <head />
       <body
-              className={cn(
-                'min-h-screen bg-background font-sans antialiased'
-              )}
+        suppressHydrationWarning
+        className={cn(
+          'min-h-screen bg-background font-sans antialiased'
+        )}
       >
         <AppProvider>
           <ThemeProvider
