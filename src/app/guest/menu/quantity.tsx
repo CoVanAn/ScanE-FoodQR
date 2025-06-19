@@ -14,7 +14,7 @@ export default function Quantity({
   return (
     <div className='flex gap-1 '>
       <Button
-        className='h-6 w-6 p-0'
+        className='h-6 w-6 p-0 bg-[#214227] dark:bg-[#33762F] text-white'
         disabled={value === 0}
         onClick={() => onChange(value - 1)}
       >
@@ -37,7 +37,7 @@ export default function Quantity({
       />
       <Button
         disabled={hidden}
-        className='h-6 w-6 p-0'
+        className='h-6 w-6 p-0 bg-[#214227] dark:bg-[#33762F] text-white'
         onClick={() => onChange(value + 1)}>
         <Plus className='w-3 h-3' />
       </Button>

@@ -6,7 +6,7 @@ import { usePathname } from 'next/navigation'
 import { ListOrdered, Soup } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { useEffect, useState } from "react"
-
+import { ThemeBackground } from '@/components/ui/theme-background'
 
 // Tránh lỗi hydration khi CartButton sử dụng localStorage
 const CartButton = dynamic(() => import('@/app/guest/cart/cart-button'), {
@@ -38,13 +38,13 @@ export default function GuestLayout({ children }: { children: React.ReactNode })
   ]
   return (
     <div className="flex flex-col">
-      <header className="border-b sticky top-0 pt-2 bg-background z-10 px-2 pb-2">
+      <header className="border-b sticky top-0 pt-2 bg-[#214227] z-10 px-6 pb-2">
         <div className="flex items-center justify-between">
           <Link href="/guest/menu" className="font-semibold flex items-center">
             {/* <span className=" bg-primary/10 w-8 h-8 rounded-full flex items-center justify-center mr-2">
               {guestName ? guestName.charAt(0).toUpperCase() : "K"}
             </span> */}
-            <span className="">
+            <span className="text-white text-lg font-semibold">
               {guestName 
                 ? guestName.length > 15
                    ? guestName.slice(0, 10) + '...' 
@@ -79,6 +79,7 @@ export default function GuestLayout({ children }: { children: React.ReactNode })
         </div>
       </header>
       <main className="flex-1 flex justify-center items-center">
+        <ThemeBackground/>
         <div className="container py-4">{children}</div>
       </main>
     </div>

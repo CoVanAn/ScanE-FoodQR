@@ -62,20 +62,20 @@ import { useAppStore } from '@/components/app-provider'
 // import socket from '@/lib/socket'
 
 export const OrderTableContext = createContext({
-  setOrderIdEdit: (value: number | undefined) => {},
+  setOrderIdEdit: (value: number | undefined) => { },
   orderIdEdit: undefined as number | undefined,
   changeStatus: (payload: {
     orderId: number
     dishId: number
     status: (typeof OrderStatusValues)[number]
     quantity: number
-  }) => {},
+  }) => { },
   changePaymentStatus: (payload: {
     orderId: number
     dishId: number
     payment: (typeof PaymentStatusValues)[number]
     quantity: number
-  }) => {},
+  }) => { },
   orderObjectByGuestId: {} as OrderObjectByGuestID
 })
 
@@ -138,13 +138,14 @@ export default function OrderTable() {
     quantity: number
   }) => {
     try {
-      await updateOrderMutation.mutateAsync(body)    } catch (error) {
+      await updateOrderMutation.mutateAsync(body)
+    } catch (error) {
       handleErrorApi({
         error
       })
     }
   }
-  
+
   const changePaymentStatus = async (body: {
     orderId: number
     dishId: number
@@ -163,7 +164,7 @@ export default function OrderTable() {
           quantity: body.quantity,
           payment: body.payment  // Now the API will accept this field
         })
-        
+
         // User feedback
         toast('', {
           description: `Trạng thái thanh toán của món ${order.dishSnapshot.name} đã thay đổi thành ${getVietnamesePaymentStatus(body.payment)}`
@@ -228,28 +229,28 @@ export default function OrderTable() {
       if (now >= fromDate && now <= toDate) {
         refetchOrderList()
       }
-    }    function onUpdateOrder(data: UpdateOrderResType['data']) {
+    } function onUpdateOrder(data: UpdateOrderResType['data']) {
       const {
         dishSnapshot: { name },
         quantity,
         payment
       } = data
-      
+
       // Generate description that includes both order status and payment status
       let description = `Món ${name} (SL: ${quantity}) vừa được cập nhật sang trạng thái "${getVietnameseOrderStatus(data.status)}"`
-      
+
       // Add payment status information if it's available
       if (payment) {
         description += ` và thanh toán "${getVietnamesePaymentStatus(payment)}"`
       }
-      
+
       toast('', { description })
       refetch()
     }
 
     function onNewOrder(data: GuestCreateOrdersResType['data']) {
       const { guest } = data[0]
-      toast('',{
+      toast('', {
         description: `${guest?.name} tại bàn ${guest?.tableNumber} vừa đặt ${data.length} đơn`
       })
       refetch()
@@ -257,7 +258,7 @@ export default function OrderTable() {
 
     function onPayment(data: PayGuestOrdersResType['data']) {
       const { guest } = data[0]
-      toast('',{
+      toast('', {
         description: `${guest?.name} tại bàn ${guest?.tableNumber} thanh toán thành công ${data.length} đơn`
       })
       refetch()
@@ -291,7 +292,7 @@ export default function OrderTable() {
         <EditOrder
           id={orderIdEdit}
           setId={setOrderIdEdit}
-          onSubmitSuccess={() => {}}
+          onSubmitSuccess={() => { }}
         />
         <div className=' flex items-center'>
           <div className='flex flex-wrap gap-2'>
@@ -342,7 +343,8 @@ export default function OrderTable() {
               table.getColumn('tableNumber')?.setFilterValue(event.target.value)
             }
             className='max-w-[80px]'
-          />          <Popover open={openStatusFilter} onOpenChange={setOpenStatusFilter}>
+          />
+          <Popover open={openStatusFilter} onOpenChange={setOpenStatusFilter}>
             <PopoverTrigger asChild>
               <Button
                 variant='outline'
@@ -352,10 +354,10 @@ export default function OrderTable() {
               >
                 {table.getColumn('status')?.getFilterValue()
                   ? getVietnameseOrderStatus(
-                      table
-                        .getColumn('status')
-                        ?.getFilterValue() as (typeof OrderStatusValues)[number]
-                    )
+                    table
+                      .getColumn('status')
+                      ?.getFilterValue() as (typeof OrderStatusValues)[number]
+                  )
                   : 'Trạng thái đơn'}
                 <ChevronsUpDown className='ml-2 h-4 w-4 shrink-0 opacity-50' />
               </Button>
@@ -397,21 +399,21 @@ export default function OrderTable() {
               </Command>
             </PopoverContent>
           </Popover>
-            {/* Payment status filter */}
+          {/* Payment status filter */}
           <Popover open={openPaymentStatusFilter} onOpenChange={setOpenPaymentStatusFilter}>
             <PopoverTrigger asChild>
               <Button
                 variant='outline'
                 role='combobox'
                 aria-expanded={openPaymentStatusFilter}
-                className='w-[180px] text-sm justify-between'
+                className='w-[194px] text-sm justify-between'
               >
                 {table.getColumn('payment')?.getFilterValue()
                   ? getVietnamesePaymentStatus(
-                      table
-                        .getColumn('payment')
-                        ?.getFilterValue() as (typeof PaymentStatusValues)[number]
-                    )
+                    table
+                      .getColumn('payment')
+                      ?.getFilterValue() as (typeof PaymentStatusValues)[number]
+                  )
                   : 'Trạng thái thanh toán'}
                 <ChevronsUpDown className='ml-2 h-4 w-4 shrink-0 opacity-50' />
               </Button>
@@ -423,7 +425,7 @@ export default function OrderTable() {
                     {PaymentStatusValues.map((status) => (
                       <CommandItem
                         key={status}
-                        value={status}                        onSelect={(currentValue) => {
+                        value={status} onSelect={(currentValue) => {
                           table
                             .getColumn('payment')
                             ?.setFilterValue(
@@ -452,6 +454,7 @@ export default function OrderTable() {
               </Command>
             </PopoverContent>
           </Popover>
+
         </div>
         <OrderStatics
           statics={statics}
@@ -471,9 +474,9 @@ export default function OrderTable() {
                           {header.isPlaceholder
                             ? null
                             : flexRender(
-                                header.column.columnDef.header,
-                                header.getContext()
-                              )}
+                              header.column.columnDef.header,
+                              header.getContext()
+                            )}
                         </TableHead>
                       )
                     })}

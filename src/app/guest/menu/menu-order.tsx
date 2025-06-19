@@ -94,7 +94,7 @@ export default function MenuOrder() {
                 onClick={() => setSelectedCategory(null)}
               >
                 <svg width="18" height="18" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <path d="M6 6L14 14M6 14L14 6" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
+                  <path d="M6 6L14 14M6 14L14 6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
                 </svg>
               </Button>
             )}
@@ -137,19 +137,20 @@ export default function MenuOrder() {
               </p>
             </div>
             <div className='flex-shrink-0 ml-auto flex justify-center items-center'>
-                <Quantity
-                  hidden={dish.status === DishStatus.Unavailable}
-                  onChange={(value) => handleQuantityChange(dish.id, value)}
-                  value={
-                    orders.find((order) => order.dishId === dish.id)?.quantity ??
-                    0
-                  }
-                />
+              <Quantity
+                hidden={dish.status === DishStatus.Unavailable}
+                onChange={(value) => handleQuantityChange(dish.id, value)}
+                value={
+                  orders.find((order) => order.dishId === dish.id)?.quantity ??
+                  0
+                }
+              />
             </div>
           </div>
-        ))}      <div className='sticky bottom-0 flex flex-col gap-2'>
+        ))}
+      <div className='sticky bottom-0 flex flex-col gap-2 p-4'>
         <Button
-          className='w-full justify-between h-12'
+          className='w-full justify-between h-12 font-semibold rounded-2xl bg-[#214227] dark:bg-[#33762F] text-white'
           onClick={handleAddToCart}
           disabled={orders.length === 0}
         >
@@ -157,13 +158,13 @@ export default function MenuOrder() {
           <span>{formatCurrency(totalPrice)}</span>
         </Button>
 
-        <Button
-          className='w-full h-12'
+        {/* <Button
+          className='w-full h-12 bg-[#F2A82C] font-semibold'
           variant="outline"
           onClick={() => router.push('/guest/cart')}
         >
           Xem giỏ hàng {cartCount > 0 && `(${cartCount})`}
-        </Button>
+        </Button> */}
       </div>
     </>
   )

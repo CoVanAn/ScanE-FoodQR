@@ -208,7 +208,7 @@ export default function OrdersCart() {
         <Button
           onClick={handleVNPayPayment}
           disabled={waitingForPaying.quantity === 0}
-          className="w-full flex justify-between items-center bg-blue-500 hover:bg-blue-600"
+          className="w-full h-full flex justify-between items-center bg-blue-500 hover:bg-blue-600  dark:text-white"
         >
           <div className="flex items-center">
             <div className="bg-white text-blue-600 font-bold rounded-full w-8 h-8 flex items-center justify-center mr-2">VN</div>

@@ -60,7 +60,9 @@ export default function CartPage() {
       {cartItems.length === 0 ? (
         <div className="text-center py-12">
           <p className="mb-4">Giỏ hàng của bạn đang trống</p>
-          <Button onClick={() => router.push('/guest/menu')}>Quay lại menu</Button>
+          <Button
+            className="bg:#214227 dark:bg-[#33762F] text-white"
+          onClick={() => router.push('/guest/menu')}>Quay lại menu</Button>
         </div>
       ) : (
         <>
@@ -111,7 +113,7 @@ export default function CartPage() {
 
           <div className="sticky bottom-0 pt-4">
             <Button
-              className="w-full justify-between"
+              className="w-full justify-between bg-[#214227] dark:bg-[#33762F] text-white"
               onClick={handleOrder}
               disabled={cartItems.length === 0}
             >

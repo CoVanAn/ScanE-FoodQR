@@ -147,15 +147,16 @@ const orderTableColumns: ColumnDef<OrderItem>[] = [
   }, {
     accessorKey: 'status',
     header: 'Trạng thái',
+    filterFn: (row, columnId, filterValue: string) => {
+      if (filterValue === undefined) return true
+      return row.getValue(columnId) === filterValue
+    },
     cell: function Cell({ row }) {
       const { changeStatus } = useContext(OrderTableContext)
-      // const isPaid = row.original.payment === PaymentStatus.Paid;
 
       const changeOrderStatus = async (
         status: (typeof OrderStatusValues)[number]
       ) => {
-        // if (isPaid) return; // Prevent changes if paid
-
         changeStatus({
           orderId: row.original.id,
           dishId: row.original.dishSnapshot.dishId!,
@@ -170,7 +171,6 @@ const orderTableColumns: ColumnDef<OrderItem>[] = [
           }}
           defaultValue={OrderStatus.Pending}
           value={row.getValue('status')}
-        // disabled={isPaid}
         >
           <SelectTrigger className='w-[140px]'>
             <SelectValue placeholder='Theme' />
@@ -188,6 +188,10 @@ const orderTableColumns: ColumnDef<OrderItem>[] = [
   }, {
     accessorKey: 'payment',
     header: 'Thanh toán',
+    filterFn: (row, columnId, filterValue: string) => {
+      if (filterValue === undefined) return true
+      return row.getValue(columnId) === filterValue
+    },
     cell: function Cell({ row }) {
       const { changePaymentStatus } = useContext(OrderTableContext)
       const isPaid = row.original.payment === PaymentStatus.Paid;
@@ -268,25 +272,10 @@ const orderTableColumns: ColumnDef<OrderItem>[] = [
       }
 
       return (
-        // <DropdownMenu>
-        //   <DropdownMenuTrigger asChild>
         <Button variant='ghost' className='h-8 w-8 p-0' disabled={isPaid}
           onClick={openEditOrder} title='Sửa đơn hàng'>
           <DotsHorizontalIcon className={`h-4 w-4 `} />
         </Button>
-        //   </DropdownMenuTrigger>
-        //   <DropdownMenuContent align='end'>
-        //     {/* <DropdownMenuLabel>Actions</DropdownMenuLabel> */}
-        //     {/* <DropdownMenuSeparator /> */}
-        //     {isPaid ? (
-        //       <DropdownMenuItem disabled className="opacity-60 cursor-not-allowed">
-        //         Đã thanh toán không thể sửa
-        //       </DropdownMenuItem>
-        //     ) : (
-        //       <DropdownMenuItem onClick={openEditOrder}>Sửa</DropdownMenuItem>
-        //     )}
-        //   </DropdownMenuContent>
-        // </DropdownMenu>
       )
     }
   }
