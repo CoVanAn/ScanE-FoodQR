@@ -61,7 +61,7 @@ export default function CartPage() {
         <div className="text-center py-12">
           <p className="mb-4">Giỏ hàng của bạn đang trống</p>
           <Button
-            className="bg:#214227 dark:bg-[#33762F] text-white"
+            className="bg-[#693F1F] text-white"
           onClick={() => router.push('/guest/menu')}>Quay lại menu</Button>
         </div>
       ) : (
@@ -113,7 +113,7 @@ export default function CartPage() {
 
           <div className="sticky bottom-0 pt-4">
             <Button
-              className="w-full justify-between bg-[#214227] dark:bg-[#33762F] text-white"
+              className="w-full justify-between bg-[#693F1F] text-white"
               onClick={handleOrder}
               disabled={cartItems.length === 0}
             >

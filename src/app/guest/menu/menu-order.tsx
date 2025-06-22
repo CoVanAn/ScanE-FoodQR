@@ -150,7 +150,7 @@ export default function MenuOrder() {
         ))}
       <div className='sticky bottom-0 flex flex-col gap-2 p-4'>
         <Button
-          className='w-full justify-between h-12 font-semibold rounded-2xl bg-[#214227] dark:bg-[#33762F] text-white'
+          className='w-full justify-between h-12 font-semibold rounded-2xl bg-[#693F1F] text-white'
           onClick={handleAddToCart}
           disabled={orders.length === 0}
         >

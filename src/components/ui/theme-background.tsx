@@ -12,8 +12,10 @@ export function ThemeBackground() {
     setMounted(true)
   }, [])
 
-  // Mặc định sử dụng light theme cho server-side rendering
-  const currentTheme = mounted ? theme : 'light'
+  // Xác định theme hiện tại:
+  // - Nếu đã mounted: kiểm tra theme người dùng chọn, nếu là system thì dùng systemTheme
+  // - Nếu chưa mounted: dùng light theme để tránh hydration mismatch
+  const currentTheme = mounted ? (theme === 'system' ? systemTheme : theme) : 'light'
 
   return (
     <div className="fixed inset-0 -z-10">

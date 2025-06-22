@@ -57,7 +57,7 @@ export default function GuestLoginForm() {
   }
 
   return (
-    <Card className='mx-auto max-w-sm'>
+    <Card className='mx-auto max-w-sm bg-[#693F1F] text-white'>
       <CardHeader>
         <CardTitle className='text-2xl'>Điền tên để gọi món</CardTitle>
       </CardHeader>
@@ -83,7 +83,7 @@ export default function GuestLoginForm() {
                 )}
               />
 
-              <Button type='submit' className='w-full'>
+              <Button type='submit' className='w-full bg-[#1c1717] text-white font-semibold rounded-2xl'>
                 Đăng nhập
               </Button>
             </div>

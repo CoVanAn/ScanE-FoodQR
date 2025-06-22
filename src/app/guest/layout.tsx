@@ -16,7 +16,7 @@ const CartButton = dynamic(() => import('@/app/guest/cart/cart-button'), {
 export default function GuestLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname()
   const [guestName, setGuestName] = useState<string>("")
-  
+
   // Chỉ truy cập localStorage khi ở phía client
   useEffect(() => {
     // Đảm bảo code này chỉ chạy ở client
@@ -38,19 +38,19 @@ export default function GuestLayout({ children }: { children: React.ReactNode })
   ]
   return (
     <div className="flex flex-col">
-      <header className="border-b sticky top-0 pt-2 bg-[#214227] z-10 px-6 pb-2">
+      <header className="border-b sticky top-0 pt-2 bg-[#693F1F] z-10 px-6 pb-2">
         <div className="flex items-center justify-between">
           <Link href="/guest/menu" className="font-semibold flex items-center">
             {/* <span className=" bg-primary/10 w-8 h-8 rounded-full flex items-center justify-center mr-2">
               {guestName ? guestName.charAt(0).toUpperCase() : "K"}
             </span> */}
             <span className="text-white text-lg font-semibold">
-              {guestName 
+              {guestName
                 ? guestName.length > 15
-                   ? guestName.slice(0, 10) + '...' 
-                   : guestName 
-              : "Khách"}
-             </span>
+                  ? guestName.slice(0, 10) + '...'
+                  : guestName
+                : "Khách"}
+            </span>
           </Link>
           <nav className="flex items-center">
             <ul className="flex items-center gap-4 mr-4">
@@ -78,8 +78,11 @@ export default function GuestLayout({ children }: { children: React.ReactNode })
           </nav>
         </div>
       </header>
-      <main className="flex-1 flex justify-center items-center">
-        <ThemeBackground/>
+      <main className="flex-1 flex justify-center items-center ">
+        {/* <ThemeBackground/> */}
+        <div className="fixed inset-0 -z-10">
+          <div className=" inset-0  h-full bg-[#EBE3D8] dark:bg-[#1c1717]" />
+        </div>
         <div className="container py-4">{children}</div>
       </main>
     </div>
