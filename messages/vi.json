@@ -1,0 +1,20 @@
+{
+  "HomePage": {
+    "title": "Phở An Cồ",
+    "subtitle": "Vị ngon, trọn khoảnh khắc",
+    "dishes": "Đa dạng các món ăn"
+  },
+  "Login": {
+    "title": "Đăng nhập"
+  },
+  "SwitchLanguage": {
+    "title": "Chuyển ngôn ngữ",
+    "label": "Ngôn ngữ:",
+    "en": "Tiếng Anh",
+    "vi": "Tiếng Việt"
+  },
+  "AboutMe": {
+    "title": "Giới thiệu về tôi",
+    "description": "Tôi là một lập trình viên đam mê với công nghệ và ẩm thực. Tôi yêu thích việc tạo ra những trải nghiệm tuyệt vời cho người dùng thông qua các ứng dụng và trang web."
+  }
+}

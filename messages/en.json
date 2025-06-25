@@ -1,0 +1,20 @@
+{
+  "HomePage": {
+    "title": "Phở An Cồ",
+    "subtitle": "Delicious taste, perfect moments",
+    "dishes": "Diverse dishes"
+  },
+  "Login": {
+    "title": "Login"
+  },
+  "SwitchLanguage": {
+    "title": "Switch language",
+    "label": "Language:",
+    "en": "English",
+    "vi": "Vietnamese"
+  },
+  "AboutMe": {
+    "title": "About Me",
+    "description": "I am a passionate developer with a love for technology and cuisine. I enjoy creating great user experiences through applications and websites."
+  }
+}
