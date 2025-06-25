@@ -1,15 +1,16 @@
 import dishApiRequest from '@/apiRequests/dish'
 import React from 'react'
-import {  wrapServerApi } from '@/lib/utils'
+import {  getIdFromSlugUrl, wrapServerApi } from '@/lib/utils'
 import Modal from './modal'
-import DishDetail from '../../../dishes/[id]/dish-detail'
+import DishDetail from '@/app/(public)/dishes/[slug]/dish-detail'
 
-const page = async ({ params}: {
-  params: {
-    id: string
-  }
+const page = async ({ params }: {
+  params: Promise<{
+    slug: string
+  }>
 }) => {
-  const {id} = await params
+  const { slug } = await params
+  const id = getIdFromSlugUrl(slug)
   const data = await wrapServerApi(() => dishApiRequest.getDish(Number(id)))
   const dish = data?.payload?.data
   if (!dish) {

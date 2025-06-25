@@ -12,6 +12,7 @@ import envConfig from "@/config"
 import { format } from 'date-fns'
 import { BookX, CookingPot, HandCoins, Loader, Truck } from 'lucide-react'
 import { io } from "socket.io-client"
+import slugify from 'slugify';
 // import { console } from "inspector"
 
 
@@ -288,3 +289,15 @@ export const wrapServerApi = async <T>( apiFunction: () => Promise<T> ) => {
     }
     return result
   }
+
+export const generateSlugUrl = ({name, id}: {
+  name: string
+  id: number
+}) => {
+  return `${slugify(name, { lower: true })}-i.${id}`
+}
+
+export const getIdFromSlugUrl = (slug: string) => {
+  const match = slug.match(/-i\.(\d+)$/)
+  return match ? Number(match[1]) : null
+}

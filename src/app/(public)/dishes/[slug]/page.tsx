@@ -2,13 +2,15 @@ import dishApiRequest from '@/apiRequests/dish'
 import React from 'react'
 import { wrapServerApi } from '@/lib/utils'
 import DishDetail from './dish-detail'
+import { getIdFromSlugUrl } from '@/lib/utils'
 
-const page = async ({ params }: {
-  params: {
-    id: string
-  }
+const page = async ({ params  }: {
+  params: Promise<{
+    slug: string
+  }>
 }) => {
-  const id = params.id
+  const { slug } = await params
+  const id =  getIdFromSlugUrl(slug)
   const data = await wrapServerApi(() => dishApiRequest.getDish(Number(id)))
   const dish = data?.payload?.data
   if (!dish) {
