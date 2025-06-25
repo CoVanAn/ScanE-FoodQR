@@ -59,7 +59,7 @@ export default function AddCategory() {
           Thêm danh mục
         </Button>
       </DialogTrigger>
-      <DialogContent className='sm:max-w-[425px]'>
+      <DialogContent className='sm:max-w-[425px] bg-white dark:bg-background'>
         <DialogHeader>
           <DialogTitle>Thêm danh mục</DialogTitle>
           <DialogDescription>

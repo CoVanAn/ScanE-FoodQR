@@ -22,8 +22,13 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "ScanE",
+  title: "Phở An Cồ",
   description: "A simple food ordering system",
+  icons: {
+    icon: "/muoi_tieu_goc.jpg",
+    shortcut: "/muoi_tieu_goc.jpg",
+    apple: "/muoi_tieu_goc.jpg",
+  },
 };
 
 export default async function RootLayout({

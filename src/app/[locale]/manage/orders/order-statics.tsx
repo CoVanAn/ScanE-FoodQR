@@ -45,7 +45,7 @@ export default function OrderStatics({
           }
         }}
       >
-        <DialogContent className='max-h-full overflow-auto'>
+        <DialogContent className='max-h-8/10 overflow-auto'>
           {selectedServingGuest && (
             <DialogHeader>
               <DialogTitle>

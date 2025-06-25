@@ -133,7 +133,7 @@ export default function AddOrder() {
           </span>
         </Button>
       </DialogTrigger>
-      <DialogContent className='sm:max-w-[600px] max-h-screen overflow-auto'>
+      <DialogContent className='sm:max-w-[600px] h-screen max-h-8/10 overflow-auto'>
         <DialogHeader>
           <DialogTitle>Tạo đơn hàng</DialogTitle>
         </DialogHeader>
@@ -224,7 +224,7 @@ export default function AddOrder() {
             >
               <div className='flex-shrink-0 relative'>
                 {dish.status === DishStatus.Unavailable && (
-                  <span className='absolute inset-0 flex items-center justify-center text-sm'>
+                  <span className='absolute inset-0 flex items-center justify-center text-sm rounded-md dark:bg-black/70 bg-white/70'>
                     Hết hàng
                   </span>
                 )}

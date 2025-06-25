@@ -22,14 +22,14 @@ const DishDetail = async ({ dish }: {
                         alt={dish.name}
                         width={500}
                         height={500}
-                        className='rounded-md object-cover w-full sm:h-[300px] md:h-[400px] lg:h-[500px] xl:h-[600px] h-[300px] max-h-[500px] mx-auto'
+                        className='rounded-md object-cover w-full h-auto'
                     />
                 </div>
 
                 <div className='font-semibold text-lg'>
                     Giá: {formatCurrency(dish.price)}
                 </div>
-                <div className='text-gray-700'>
+                <div className='text-gray-700 dark:text-gray-300'>
                     {dish.description}
                 </div>
             </div>

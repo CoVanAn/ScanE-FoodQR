@@ -115,7 +115,7 @@ export default function MenuOrder() {
           >
             <div className='flex-shrink-0 relative '>
               {dish.status === DishStatus.Unavailable && (
-                <div className='absolute inset-0 bg-black/70 rounded-md' >
+                <div className='absolute inset-0 rounded-md  dark:bg-black/70 bg-white/70'>
                   <span className='absolute inset-0 flex items-center justify-center text-sm'>
                     Hết hàng
                   </span>

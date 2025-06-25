@@ -1,5 +1,5 @@
 // import Link from 'next/link'
-import {Link} from '@/i18n/navigation'
+import { Link } from '@/i18n/navigation'
 import { Menu, Package2 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet'
@@ -17,7 +17,7 @@ export default async function Layout({
   modal?: React.ReactNode
 }>) {
   const t = await getTranslations('SwitchLanguage')
-  
+
   return (
     <div className='flex min-h-screen w-full flex-col relative'>
       <header className='sticky top-0 flex h-16 items-center gap-4 border-b bg-background px-4 md:px-6 z-20 shadow-sm md:gap-6 lg:px-8'>
@@ -37,12 +37,14 @@ export default async function Layout({
           </SheetTrigger>
           <SheetContent side="left" >
             <DialogTitle className="sr-only">Menu điều hướng</DialogTitle>
-            <DialogDescription className="sr-only">Danh sách các mục trong menu</DialogDescription>            <nav className="grid gap-6 text-lg font-medium left-0 top-0 p-4">
+            <DialogDescription className="sr-only">Danh sách các mục trong menu</DialogDescription>
+            <nav className="grid gap-6 text-lg font-medium left-0 top-0 p-4">
               <Link href="#" className="flex items-center gap-2 text-lg font-semibold">
                 <Package2 className="h-6 w-6" />
                 <span className="sr-only">An Cồ</span>
               </Link>
-              <NavItems className="text-muted-foreground transition-colors hover:text-foreground" />              <div className="flex flex-col gap-4 mt-6 pt-6 border-t">
+              <NavItems className="text-muted-foreground transition-colors hover:text-foreground" />
+              <div className="flex flex-col gap-4 mt-6 pt-6 border-t">
                 <div className="flex items-center gap-2">
                   <span className="text-sm font-medium">{t('label')}</span>
                   <LanguageSwitcher />
@@ -51,7 +53,7 @@ export default async function Layout({
               </div>
             </nav>
           </SheetContent>
-        </Sheet>      
+        </Sheet>
         <div className='ml-auto flex items-center gap-3'>
           <LanguageSwitcher />
           <DarkModeToggle />
@@ -60,7 +62,7 @@ export default async function Layout({
       <main className='flex flex-1 flex-col gap-4 p-4 md:gap-8 md:p-8'>
         {children}
         {modal}
-        </main>
+      </main>
     </div>
   )
 }

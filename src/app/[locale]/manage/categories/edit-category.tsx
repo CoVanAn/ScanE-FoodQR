@@ -63,7 +63,7 @@ export default function EditCategory({
 
   return (
     <Dialog open={true} onOpenChange={(open) => !open && onCancel()}>
-      <DialogContent className='sm:max-w-[425px]'>
+      <DialogContent className='sm:max-w-[425px] bg-white dark:bg-background'>
         <DialogHeader>
           <DialogTitle>Chỉnh sửa danh mục</DialogTitle>
           <DialogDescription>

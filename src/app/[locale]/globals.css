@@ -44,6 +44,43 @@
 }
 :root {
   --radius: 0.625rem;
+
+  /* Font Size Variables for Mobile-First Responsive Design */
+  --font-xs: 0.75rem;      /* 12px - Very small text */
+  --font-sm: 0.875rem;     /* 14px - Small text */
+  --font-base: 1rem;       /* 16px - Base font size */
+  --font-lg: 1.125rem;     /* 18px - Large text */
+  --font-xl: 1.25rem;      /* 20px - Extra large */
+  --font-2xl: 1.5rem;      /* 24px - 2x large */
+  --font-3xl: 1.875rem;    /* 30px - 3x large */
+  --font-4xl: 2.25rem;     /* 36px - 4x large */
+  --font-5xl: 3rem;        /* 48px - 5x large */
+  --font-6xl: 3.75rem;     /* 60px - 6x large */
+
+  /* Mobile Specific Font Sizes */
+  --font-mobile-xs: 0.625rem;    /* 10px - Mobile extra small */
+  --font-mobile-sm: 0.75rem;     /* 12px - Mobile small */
+  --font-mobile-base: 0.875rem;  /* 14px - Mobile base */
+  --font-mobile-lg: 1rem;        /* 16px - Mobile large */
+  --font-mobile-xl: 1.125rem;    /* 18px - Mobile extra large */
+  --font-mobile-2xl: 1.25rem;    /* 20px - Mobile 2x large */
+  --font-mobile-3xl: 1.5rem;     /* 24px - Mobile 3x large */
+
+  /* Tablet Specific Font Sizes */
+  --font-tablet-base: 1rem;      /* 16px - Tablet base */
+  --font-tablet-lg: 1.25rem;     /* 20px - Tablet large */
+  --font-tablet-xl: 1.5rem;      /* 24px - Tablet extra large */
+  --font-tablet-2xl: 1.875rem;   /* 30px - Tablet 2x large */
+  --font-tablet-3xl: 2.25rem;    /* 36px - Tablet 3x large */
+
+  /* Desktop Specific Font Sizes */
+  --font-desktop-base: 1.125rem; /* 18px - Desktop base */
+  --font-desktop-lg: 1.5rem;     /* 24px - Desktop large */
+  --font-desktop-xl: 2rem;       /* 32px - Desktop extra large */
+  --font-desktop-2xl: 2.5rem;    /* 40px - Desktop 2x large */
+  --font-desktop-3xl: 3rem;      /* 48px - Desktop 3x large */
+  --font-desktop-4xl: 3.75rem;   /* 60px - Desktop 4x large */
+
   --background: #EBE3D8;
   --foreground: oklch(0.145 0 0);
   --card: oklch(1 0 0);
@@ -118,6 +155,73 @@
   body {
     @apply bg-background text-foreground;
   }
+  
+  /* Font Size Utility Classes */
+  .text-mobile-xs { font-size: var(--font-mobile-xs); }
+  .text-mobile-sm { font-size: var(--font-mobile-sm); }
+  .text-mobile-base { font-size: var(--font-mobile-base); }
+  .text-mobile-lg { font-size: var(--font-mobile-lg); }
+  .text-mobile-xl { font-size: var(--font-mobile-xl); }
+  .text-mobile-2xl { font-size: var(--font-mobile-2xl); }
+  .text-mobile-3xl { font-size: var(--font-mobile-3xl); }
+  
+  .text-tablet-base { font-size: var(--font-tablet-base); }
+  .text-tablet-lg { font-size: var(--font-tablet-lg); }
+  .text-tablet-xl { font-size: var(--font-tablet-xl); }
+  .text-tablet-2xl { font-size: var(--font-tablet-2xl); }
+  .text-tablet-3xl { font-size: var(--font-tablet-3xl); }
+  
+  .text-desktop-base { font-size: var(--font-desktop-base); }
+  .text-desktop-lg { font-size: var(--font-desktop-lg); }
+  .text-desktop-xl { font-size: var(--font-desktop-xl); }
+  .text-desktop-2xl { font-size: var(--font-desktop-2xl); }
+  .text-desktop-3xl { font-size: var(--font-desktop-3xl); }
+  .text-desktop-4xl { font-size: var(--font-desktop-4xl); }
+  
+  /* Responsive Font Classes */
+  .text-responsive-sm {
+    font-size: var(--font-mobile-sm);
+  }
+  
+  .text-responsive-base {
+    font-size: var(--font-mobile-base);
+  }
+  
+  .text-responsive-lg {
+    font-size: var(--font-mobile-lg);
+  }
+  
+  .text-responsive-xl {
+    font-size: var(--font-mobile-xl);
+  }
+  
+  .text-responsive-2xl {
+    font-size: var(--font-mobile-2xl);
+  }
+  
+  .text-responsive-3xl {
+    font-size: var(--font-mobile-3xl);
+  }
+  
+  /* Tablet breakpoint */
+  @media (min-width: 640px) {
+    .text-responsive-base { font-size: var(--font-tablet-base); }
+    .text-responsive-lg { font-size: var(--font-tablet-lg); }
+    .text-responsive-xl { font-size: var(--font-tablet-xl); }
+    .text-responsive-2xl { font-size: var(--font-tablet-2xl); }
+    .text-responsive-3xl { font-size: var(--font-tablet-3xl); }
+  }
+  
+  /* Desktop breakpoint */
+  @media (min-width: 1024px) {
+    .text-responsive-base { font-size: var(--font-desktop-base); }
+    .text-responsive-lg { font-size: var(--font-desktop-lg); }
+    .text-responsive-xl { font-size: var(--font-desktop-xl); }
+    .text-responsive-2xl { font-size: var(--font-desktop-2xl); }
+    .text-responsive-3xl { font-size: var(--font-desktop-3xl); }
+    .text-responsive-4xl { font-size: var(--font-desktop-4xl); }
+  }
+  
   :root {
     --chart-1: 12 76% 61%;
     --chart-2: 173 58% 39%;
