@@ -22,7 +22,7 @@ export default function Modal({
                     router.back()
                 }
             }}>
-                <DialogContent className="sm:max-w-[425px] md:max-w-[600px] lg:max-w-[800px] xl:max-w-[1000px]">
+                <DialogContent className="sm:max-w-[425px] md:max-w-[540px]">
                     <DialogTitle>Thông tin </DialogTitle>
                     {children}
                     <DialogDescription>

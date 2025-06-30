@@ -25,10 +25,22 @@ export const decodeToken = (token: string) => {
 export function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl
   
-  // Extract locale from pathname
+  // With localePrefix: 'always', we need to handle routes without locale prefix
   const pathnameIsMissingLocale = routing.locales.every(
     (locale) => !pathname.startsWith(`/${locale}/`) && pathname !== `/${locale}`
   )
+  
+  // If path is missing locale and needs it, redirect to default locale
+  if (pathnameIsMissingLocale && 
+      !pathname.startsWith('/_next') && 
+      !pathname.startsWith('/api') && 
+      !pathname.includes('.') &&
+      pathname !== '/') {
+    
+    // Redirect to Vietnamese (default) locale
+    const newUrl = new URL(`/vi${pathname}`, request.url)
+    return NextResponse.redirect(newUrl)
+  }
   
   // Get locale-free pathname for auth checks
   const localeFreePath = pathnameIsMissingLocale 
