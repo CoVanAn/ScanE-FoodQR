@@ -133,7 +133,7 @@ export default function AddOrder() {
           </span>
         </Button>
       </DialogTrigger>
-      <DialogContent className='sm:max-w-[600px] h-screen max-h-8/10 overflow-auto'>
+      <DialogContent className='sm:max-w-[600px] h-screen max-h-8/10 overflow-auto bg-white dark:bg-background'>
         <DialogHeader>
           <DialogTitle>Tạo đơn hàng</DialogTitle>
         </DialogHeader>
