@@ -22,7 +22,17 @@ const nextConfig: NextConfig = {
         pathname: '/**'
       }
     ]
-  }
+  },
+  // SEO optimizations
+  experimental: {
+    optimizePackageImports: ['@next/font'],
+  },
+  // Compress responses
+  compress: true,
+  // Enable trailing slash for better SEO
+  trailingSlash: false,
+  // Power by header removal for security
+  poweredByHeader: false,
 };
 
 export default withNextIntl(nextConfig);

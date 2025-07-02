@@ -4,6 +4,11 @@
     "subtitle": "Vị ngon, trọn khoảnh khắc",
     "dishes": "Đa dạng các món ăn"
   },
+  "DishesPage": {
+    "title": "Menu Món Ăn",
+    "subtitle": "Khám phá menu đa dạng",
+    "noData": "Hiện tại chưa có món ăn nào trong menu"
+  },
   "Login": {
     "title": "Đăng nhập"
   },

@@ -4,6 +4,11 @@
     "subtitle": "Delicious taste, perfect moments",
     "dishes": "Diverse dishes"
   },
+  "DishesPage": {
+    "title": "Menu",
+    "subtitle": "Explore our diverse menu",
+    "noData": "No dishes available at the moment"
+  },
   "Login": {
     "title": "Login"
   },

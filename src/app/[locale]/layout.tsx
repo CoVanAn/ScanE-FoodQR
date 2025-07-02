@@ -22,12 +22,65 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Phở An Cồ",
-  description: "A simple food ordering system",
+  title: {
+    default: "Phở An Cồ - Nhà hàng Phở truyền thống Việt Nam",
+    template: "%s | Phở An Cồ"
+  },
+  description: "Nhà hàng Phở An Cồ - Nơi mang đến hương vị phở truyền thống Việt Nam với menu đa dạng, không gian ấm cúng và dịch vụ tận tâm. Đặt món online nhanh chóng!",
+  keywords: ["phở", "nhà hàng", "món việt", "phở truyền thống", "đặt món online", "vietnamese restaurant", "phở an cồ"],
+  authors: [{ name: "Phở An Cồ Restaurant" }],
+  creator: "Phở An Cồ",
+  publisher: "Phở An Cồ",
+  metadataBase: new URL('https://your-domain.com'), // Thay bằng domain thật
+  alternates: {
+    canonical: "/",
+    languages: {
+      'vi': '/vi',
+      'en': '/en',
+    },
+  },
+  openGraph: {
+    title: "Phở An Cồ - Nhà hàng Phở truyền thống Việt Nam",
+    description: "Nhà hàng Phở An Cồ - Nơi mang đến hương vị phở truyền thống Việt Nam với menu đa dạng, không gian ấm cúng và dịch vụ tận tâm.",
+    url: "https://your-domain.com",
+    siteName: "Phở An Cồ Restaurant",
+    images: [
+      {
+        url: "/banner.jpg",
+        width: 1200,
+        height: 630,
+        alt: "Phở An Cồ - Nhà hàng Phở truyền thống",
+      },
+    ],
+    locale: "vi_VN",
+    alternateLocale: ["en_US"],
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Phở An Cồ - Nhà hàng Phở truyền thống Việt Nam",
+    description: "Nhà hàng Phở An Cồ - Nơi mang đến hương vị phở truyền thống Việt Nam với menu đa dạng.",
+    images: ["/banner.jpg"],
+    creator: "@pho_an_co",
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-video-preview": -1,
+      "max-image-preview": "large",
+      "max-snippet": -1,
+    },
+  },
   icons: {
-    icon: "/muoi_tieu_goc.jpg",
-    shortcut: "/muoi_tieu_goc.jpg",
-    apple: "/muoi_tieu_goc.jpg",
+    icon: "/favicon.ico",
+    shortcut: "/icon.png",
+    apple: "/apple-icon.png",
+  },
+  verification: {
+    google: "your-google-verification-code", // Thêm khi có
   },
 };
 

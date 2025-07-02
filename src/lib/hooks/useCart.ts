@@ -9,7 +9,7 @@ export function useCart() {
   // Thêm món ăn vào giỏ hàng
   const addToCart = (orders: { dishId: number; quantity: number }[]) => {
     setCartItems((prevItems) => {
-      let newItems = [...prevItems]
+      const newItems = [...prevItems]
       
       // Xử lý tất cả các món một lần
       orders.forEach(order => {

@@ -91,7 +91,7 @@ export default function EditOrder({
   const onSubmit = async (values: UpdateOrderBodyType) => {
     if (updateOrderMutation.isPending) return
     try {
-      let body: UpdateOrderBodyType & { orderId: number } = {
+      const body: UpdateOrderBodyType & { orderId: number } = {
         orderId: id as number,
         ...values
       }
@@ -176,7 +176,7 @@ export default function EditOrder({
                           {...field}
                           value={field.value}
                           onChange={(e) => {
-                            let value = e.target.value
+                            const value = e.target.value
                             const numberValue = Number(value)
                             if (isNaN(numberValue)) {
                               return
