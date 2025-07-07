@@ -26,15 +26,20 @@ export default async function Home() {
       <StructuredData type="organization" />
       <div className='w-full space-y-4'>
         <section className='relative z-10 w-full overflow-hidden h-[200px] sm:h-[300px] '>
-          <span className='absolute top-0 left-0 w-full h-full bg-black opacity-40 z-10'></span>
+          <span className='absolute top-0 left-0 w-full h-full bg-black z-10 opacity-40'></span>
           <Image
             src='/banner.jpg'
             width={500}
             height={500}
+            sizes=''
             quality={100}
             alt='Banner'
             priority
             className='absolute top-0 left-0 w-full object-cover h-[200px] sm:h-[300px] '
+            placeholder='blur'
+            title='Banner'
+            blurDataURL='data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAAQABQDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAv/xAAhEAACAQMDBQAAAAAAAAAAAAABAgMABAUGIWGRkqGx0f/EABUBAQEAAAAAAAAAAAAAAAAAAAMF/8QAGhEAAgIDAAAAAAAAAAAAAAAAAAECEgMRkf/aAAwDAQACEQMRAD8AltJagyeH0AthI5xdrLcNM91BF5pX2HaH9bcfaSXWGaRmknyJckliyjqTzSlT54b6bk+h0R//2Q='
+          
           />
           <div className='z-20 relative py-16 md:py-20 px-4 sm:px-10 md:px-20'>
             <h2 className='text-center text-mobile-xl sm:text-2xl md:text-4xl lg:text-5xl font-bold text-white dark:text-white'>
@@ -60,7 +65,10 @@ export default async function Home() {
                     height={150}
                     quality={100}
                     alt={dish.name}
+                    title='Món ăn'
                     className='object-cover w-[120px] h-[120px] rounded-md sm:w-[150px] sm:h-[150px]'
+                    placeholder='blur'
+                    blurDataURL='data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYa'
                   />
                 </div>
                 <div className='space-y-1'>

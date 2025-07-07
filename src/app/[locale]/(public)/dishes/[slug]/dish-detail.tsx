@@ -23,6 +23,8 @@ const DishDetail = async ({ dish }: {
                         width={500}
                         height={500}
                         className='rounded-md object-cover w-full h-auto'
+                        placeholder='blur'
+                        blurDataURL={dish.image || '/pho.jpg'}
                     />
                 </div>
 

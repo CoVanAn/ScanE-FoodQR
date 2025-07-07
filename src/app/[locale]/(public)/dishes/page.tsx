@@ -94,11 +94,14 @@ export default async function DishesPage() {
             >
               <div className="aspect-square relative overflow-hidden">
                 <Image
-                  src={dish.image || '/muoi_tieu_goc.jpg'}
+                  src={dish.image || '/pho.jpg'}
                   alt={dish.name}
                   fill
                   className="object-cover group-hover:scale-105 transition-transform duration-200"
                   sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 25vw"
+                  placeholder='blur'
+                  title='Món ăn'
+                  blurDataURL={dish.image || '/pho.jpg'}
                 />
               </div>
               <div className="p-4">
