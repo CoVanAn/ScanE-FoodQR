@@ -74,6 +74,15 @@ export default function AddDish() {
   }
   const onSubmit = async (values: CreateDishBodyType) => {
     if (addDishMutation.isPending) return
+    
+    // Validate image requirement
+    if (!file && !values.image) {
+      form.setError('image', {
+        message: 'Vui lòng chọn ảnh món ăn'
+      });
+      return;
+    }
+    
     try {
       let body = values
       if (file) {
@@ -157,7 +166,8 @@ export default function AddDish() {
                           const file = e.target.files?.[0]
                           if (file) {
                             setFile(file)
-                            field.onChange('http://localhost:3000/' + file.name)
+                            // Don't set URL here - wait for upload response
+                            // field.onChange('http://localhost:3000/' + file.name)
                           }
                         }}
                         className='hidden'
@@ -171,6 +181,7 @@ export default function AddDish() {
                         <span className='sr-only'>Upload</span>
                       </button>
                     </div>
+                    <FormMessage />
                   </FormItem>
                 )}
               />
@@ -297,8 +308,12 @@ export default function AddDish() {
           </form>
         </Form>
         <DialogFooter>
-          <Button type='submit' form='add-dish-form'>
-            Thêm
+          <Button 
+            type='submit' 
+            form='add-dish-form'
+            disabled={addDishMutation.isPending || uploadMediaMutation.isPending}
+          >
+            {(addDishMutation.isPending || uploadMediaMutation.isPending) ? 'Đang xử lý...' : 'Thêm'}
           </Button>
         </DialogFooter>
       </DialogContent>

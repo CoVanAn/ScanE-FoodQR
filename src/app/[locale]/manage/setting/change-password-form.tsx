@@ -121,8 +121,12 @@ export default function ChangePasswordForm() {
                 <Button variant='outline' size='sm' type='reset'>
                   Hủy
                 </Button>
-                <Button size='sm' type='submit'>
-                  Lưu thông tin
+                <Button 
+                size='sm' 
+                type='submit'
+                disabled={changePasswordMutation.isPending}
+                >
+                  {(changePasswordMutation.isPending) ? 'Đang xử lý' : "Cập nhật"}
                 </Button>
               </div>
             </div>

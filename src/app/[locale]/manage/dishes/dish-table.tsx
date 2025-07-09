@@ -121,14 +121,22 @@ export const columns: ColumnDef<DishItem>[] = [
   {
     accessorKey: 'description',
     header: 'Mô tả',
-    cell: ({ row }) => (
-      <div
-        dangerouslySetInnerHTML={{
-          __html: DOMPurify.sanitize(row.getValue('description'))
-        }}
-        className='whitespace-pre-line'
-      />
-    )
+    cell: ({ row }) => {
+      const description = row.getValue('description') as string
+      const truncatedDescription = description && description.length > 25 
+        ? description.substring(0, 25) + '......' 
+        : description
+      
+      return (
+        <div
+          dangerouslySetInnerHTML={{
+            __html: DOMPurify.sanitize(truncatedDescription || '')
+          }}
+          className='whitespace-pre-line'
+          title={description} // Hiển thị mô tả đầy đủ khi hover
+        />
+      )
+    }
   },
   {
     accessorKey: 'status',
@@ -244,17 +252,7 @@ export default function DishTable() {
   const dishListQuery = useDishListQuery(selectedCategory ? Number(selectedCategory) : null)
   const data = dishListQuery.data?.payload.data ?? []
   const isLoading = dishListQuery.isLoading
-  // Reset page khi thay đổi category
-  // useEffect(() => {
-  //   if (table) {
-  //     table.setPageIndex(0)
-
-  //     // Also reset the URL query parameter for pagination
-  //     const url = new URL(window.location.href)
-  //     url.searchParams.delete('page')
-  //     window.history.replaceState({}, '', url)
-  //   }
-  // }, [selectedCategory])
+  
   const [sorting, setSorting] = useState<SortingState>([])
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([])
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({})
@@ -292,6 +290,29 @@ export default function DishTable() {
       pageSize: PAGE_SIZE
     })
   }, [table, pageIndex])
+
+  // Reset về trang đầu khi thay đổi category filter
+  useEffect(() => {
+    if (selectedCategory !== null) {
+      table.setPageIndex(0)
+      // Reset URL parameter
+      const url = new URL(window.location.href)
+      url.searchParams.delete('page')
+      window.history.replaceState({}, '', url)
+    }
+  }, [selectedCategory, table])
+
+  // Reset về trang đầu khi filter name thay đổi
+  useEffect(() => {
+    const nameFilter = table.getColumn('name')?.getFilterValue() as string
+    if (nameFilter) {
+      table.setPageIndex(0)
+      // Reset URL parameter
+      const url = new URL(window.location.href)
+      url.searchParams.delete('page')
+      window.history.replaceState({}, '', url)
+    }
+  }, [table.getColumn('name')?.getFilterValue(), table])
 
   return (
     <DishTableContext.Provider
@@ -368,6 +389,12 @@ export default function DishTable() {
                 table.getColumn('name')?.setFilterValue('');
                 // Reset category filter
                 setSelectedCategory(null);
+                // Reset pagination
+                table.setPageIndex(0);
+                // Reset URL parameter
+                const url = new URL(window.location.href)
+                url.searchParams.delete('page')
+                window.history.replaceState({}, '', url)
               }}
               disabled={
                 !selectedCategory &&
@@ -452,6 +479,10 @@ export default function DishTable() {
               page={table.getState().pagination.pageIndex + 1}
               pageSize={table.getPageCount()}
               pathname='/manage/dishes'
+              isLink={false}
+              onClick={(pageNumber) => {
+                table.setPageIndex(pageNumber - 1)
+              }}
             />
           </div>
         </div>

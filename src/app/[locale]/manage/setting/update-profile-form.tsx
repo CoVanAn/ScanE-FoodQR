@@ -121,9 +121,8 @@ export default function UpdateProfileForm() {
                           const file = e.target.files?.[0]
                           if (file) {
                             setFile(file)
-                            field.onChange(
-                              'http://localhost:3000/' + field.name
-                            )
+                            // Don't set URL here - wait for upload response
+                            // field.onChange('http://localhost:3000/' + field.name)
                           }
                         }}
                       />
@@ -136,6 +135,7 @@ export default function UpdateProfileForm() {
                         <span className='sr-only'>Upload</span>
                       </button>
                     </div>
+                    <FormMessage />
                   </FormItem>
                 )}
               />
@@ -163,9 +163,13 @@ export default function UpdateProfileForm() {
                 <Button variant='outline' size='sm' type='reset'>
                   Hủy
                 </Button>
-                <Button size='sm' type='submit'>
-                  Lưu thông tin
-                </Button>
+                <Button 
+                size='sm' 
+                type='submit'
+                disabled={updateMeMutation.isPending || uploadMediaMutation.isPending}
+                >
+                  {(updateMeMutation.isPending || uploadMediaMutation.isPending) ? 'Đang xử lý...' : 'Cập nhật'}
+ư                </Button>
               </div>
             </div>
           </CardContent>

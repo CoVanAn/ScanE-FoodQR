@@ -176,8 +176,12 @@ export default function AddTable() {
           </form>
         </Form>
         <DialogFooter>
-          <Button type='submit' form='add-table-form'>
-            Thêm
+          <Button
+           type='submit' 
+           form='add-table-form'
+           disabled={addTableMutation.isPending}
+           >
+            {(addTableMutation.isPending) ? "Đang xử lý" : "Thêm"}
           </Button>
         </DialogFooter>
       </DialogContent>

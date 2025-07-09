@@ -128,7 +128,8 @@ export default function AddEmployee() {
                           const file = e.target.files?.[0]
                           if (file) {
                             setFile(file)
-                            field.onChange('http://localhost:3000/' + file.name)
+                            // Don't set URL here - wait for upload response
+                            // field.onChange('http://localhost:3000/' + file.name)
                           }
                         }}
                         className='hidden'
@@ -142,6 +143,7 @@ export default function AddEmployee() {
                         <span className='sr-only'>Upload</span>
                       </button>
                     </div>
+                    <FormMessage />
                   </FormItem>
                 )}
               />
@@ -220,8 +222,12 @@ export default function AddEmployee() {
           </form>
         </Form>
         <DialogFooter>
-          <Button type='submit' form='add-employee-form'>
-            Thêm
+          <Button 
+          type='submit'
+           form='add-employee-form'
+           disabled={addAccountMutation.isPending || uploadMediaMutation.isPending}
+           >
+            {(addAccountMutation.isPending || uploadMediaMutation.isPending) ? 'Đang xử lý...' : 'Lưu'}
           </Button>
         </DialogFooter>
       </DialogContent>

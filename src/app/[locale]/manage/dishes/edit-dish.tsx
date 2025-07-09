@@ -175,7 +175,8 @@ export default function EditDish({
                           const file = e.target.files?.[0]
                           if (file) {
                             setFile(file)
-                            field.onChange('http://localhost:3000/' + file.name)
+                            // Don't set URL here - wait for upload response
+                            // field.onChange('http://localhost:3000/' + file.name)
                           }
                         }}
                         className='hidden'
@@ -189,6 +190,7 @@ export default function EditDish({
                         <span className='sr-only'>Upload</span>
                       </button>
                     </div>
+                    <FormMessage />
                   </FormItem>
                 )}
               />
@@ -316,8 +318,12 @@ export default function EditDish({
           </form>
         </Form>
         <DialogFooter>
-          <Button type='submit' form='edit-dish-form'>
-            Lưu
+          <Button 
+          type='submit' 
+          form='edit-dish-form'
+                disabled={updateDishMutation.isPending || uploadMediaMutation.isPending}
+          >
+            {(updateDishMutation.isPending || uploadMediaMutation.isPending) ? 'Đang xử lý...' : 'Lưu'}
           </Button>
         </DialogFooter>
       </DialogContent>

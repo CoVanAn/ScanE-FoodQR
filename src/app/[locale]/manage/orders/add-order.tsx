@@ -259,7 +259,7 @@ export default function AddOrder() {
           <Button
             className='w-full justify-between'
             onClick={handleOrder}
-            disabled={orders.length === 0}
+            disabled={orders.length === 0 || createOrderMutation.isPending || createGuestMutation.isPending}
           >
             <span>Đặt hàng · {orders.length} món</span>
             <span>{formatCurrency(totalPrice)}</span>

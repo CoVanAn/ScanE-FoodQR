@@ -20,6 +20,11 @@ const nextConfig: NextConfig = {
       {
         hostname: 'via.placeholder.com',
         pathname: '/**'
+      },
+      {
+        protocol: 'https',
+        hostname: 'res.cloudinary.com',
+        pathname: '/dl9phep1a/**'
       }
     ]
   }

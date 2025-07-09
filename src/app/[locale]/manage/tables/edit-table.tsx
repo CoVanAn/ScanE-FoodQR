@@ -252,8 +252,12 @@ export default function EditTable({
           </form>
         </Form>
         <DialogFooter>
-          <Button type='submit' form='edit-table-form'>
-            Lưu
+          <Button 
+          type='submit' 
+          form='edit-table-form'
+          disabled={updateTableMutation.isPending}
+          >
+            {updateTableMutation.isPending ? "Đang xử lý" : "lưu"}
           </Button>
         </DialogFooter>
       </DialogContent>

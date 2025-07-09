@@ -122,7 +122,7 @@ export default function EditOrder({
         }
       }}
     >
-      <DialogContent className='sm:max-w-[600px] max-h-screen overflow-auto'>
+      <DialogContent className='sm:max-w-[600px] max-h-screen overflow-auto bg-white dark:bg-background'>
         <DialogHeader>
           <DialogTitle>Cập nhật đơn hàng</DialogTitle>
         </DialogHeader>
@@ -223,8 +223,12 @@ export default function EditOrder({
           </form>
         </Form>
         <DialogFooter>
-          <Button type='submit' form='edit-order-form'>
-            Lưu
+          <Button 
+          type='submit'
+           form='edit-order-form'
+           disabled={updateOrderMutation.isPending}
+           >
+            {(updateOrderMutation.isPending) ? 'Đang xử lý...' : 'Lưu'}
           </Button>
         </DialogFooter>
       </DialogContent>

@@ -179,7 +179,8 @@ export default function EditEmployee({
                           const file = e.target.files?.[0]
                           if (file) {
                             setFile(file)
-                            field.onChange('http://localhost:3000/' + file.name)
+                            // Don't set URL here - wait for upload response
+                            // field.onChange('http://localhost:3000/' + file.name)
                           }
                         }}
                         className='hidden'
@@ -193,6 +194,7 @@ export default function EditEmployee({
                         <span className='sr-only'>Upload</span>
                       </button>
                     </div>
+                    <FormMessage />
                   </FormItem>
                 )}
               />
@@ -330,8 +332,12 @@ export default function EditEmployee({
           </form>
         </Form>
         <DialogFooter>
-          <Button type='submit' form='edit-employee-form'>
-            Lưu
+          <Button 
+          type='submit'
+           form='edit-employee-form'
+           disabled={updateAccountMutation.isPending || uploadMediaMutation.isPending}
+           >
+            {(updateAccountMutation.isPending || uploadMediaMutation.isPending) ? 'Đang xử lý...' : 'Lưu'}
           </Button>
         </DialogFooter>
       </DialogContent>
