@@ -1,19 +1,32 @@
 'use client'
-import Image from 'next/image'
 import { Button } from '@/components/ui/button'
 import { useDishListQuery } from '@/queries/useDish'
-import { cn, formatCurrency, handleErrorApi } from '@/lib/utils'
-import Quantity from '@/app/[locale]/guest/menu/quantity'
+import { formatCurrency, handleErrorApi } from '@/lib/utils'
 import { useEffect, useMemo, useState } from 'react'
 import { GuestCreateOrdersBodyType } from '@/schemaValidations/guest.schema'
 import { useGuestOrderMutation } from '@/queries/useGuest'
-// import { useRouter } from 'next/navigation'
 import { useRouter} from '@/i18n/navigation'
 import { DishStatus } from '@/constants/type'
 import { useCart } from '@/lib/hooks/useCart'
 import { toast } from 'sonner'
 import { useCategoryListQuery } from '@/queries/useCategory'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
+import dynamic from 'next/dynamic'
+
+// Lazy load DishItem component
+const DishItem = dynamic(() => import('./dish-item'), {
+  loading: () => (
+    <div className="flex gap-3 px-6 sm:px-0">
+      <div className="w-[80px] h-[80px] bg-muted animate-pulse rounded-md"></div>
+      <div className="flex-1 space-y-2">
+        <div className="h-4 bg-muted animate-pulse rounded w-3/4"></div>
+        <div className="h-3 bg-muted animate-pulse rounded w-full"></div>
+        <div className="h-4 bg-muted animate-pulse rounded w-1/4"></div>
+      </div>
+      <div className="w-16 h-6 bg-muted animate-pulse rounded"></div>
+    </div>
+  )
+})
 
 export default function MenuOrder() {
   const { data } = useDishListQuery()
@@ -104,51 +117,17 @@ export default function MenuOrder() {
       </div>
       {filteredDishes
         .filter((dish) => dish.status !== DishStatus.Hidden)
-        .map((dish) => (
-          <div
-            key={dish.id}
-            className={
-              cn('flex gap-3 px-6 sm:px-0', {
-                'pointer-events-none': dish.status === DishStatus.Unavailable
-              })}
-
-          >
-            <div className='flex-shrink-0 relative '>
-              {dish.status === DishStatus.Unavailable && (
-                <div className='absolute inset-0 rounded-md  dark:bg-black/70 bg-white/70'>
-                  <span className='absolute inset-0 flex items-center justify-center text-sm'>
-                    Hết hàng
-                  </span>
-                </div>
-              )}
-              <Image
-                src={dish.image}
-                alt={dish.name}
-                height={100}
-                width={100}
-                quality={100}
-                className='object-cover w-[80px] h-[80px] rounded-md'
-              />
-            </div>
-            <div className='space-y-1'>
-              <h3 className='text-sm'>{dish.name}</h3>
-              <p className='text-xs'>{dish.description}</p>
-              <p className='text-xs font-semibold'>
-                {formatCurrency(dish.price)}
-              </p>
-            </div>
-            <div className='flex-shrink-0 ml-auto flex justify-center items-center'>
-              <Quantity
-                hidden={dish.status === DishStatus.Unavailable}
-                onChange={(value) => handleQuantityChange(dish.id, value)}
-                value={
-                  orders.find((order) => order.dishId === dish.id)?.quantity ??
-                  0
-                }
-              />
-            </div>
-          </div>
-        ))}
+        .map((dish) => {
+          const quantity = orders.find((order) => order.dishId === dish.id)?.quantity ?? 0
+          return (
+            <DishItem
+              key={dish.id}
+              dish={dish}
+              quantity={quantity}
+              onQuantityChange={handleQuantityChange}
+            />
+          )
+        })}
       <div className='sticky bottom-0 flex flex-col gap-2 p-4'>
         <Button
           className='w-full justify-between h-12 font-semibold rounded-2xl bg-[#693F1F] text-white'

@@ -3,11 +3,22 @@ import { Link } from '@/i18n/navigation'
 import { Menu, Package2 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet'
-import NavItems from '@/app/[locale]/(public)/nav-items'
-import { DarkModeToggle } from '@/components/custom/strickmode'
 import { DialogDescription, DialogTitle } from '@radix-ui/react-dialog'
-import LanguageSwitcher from '@/components/language-switcher'
 import { getTranslations } from 'next-intl/server'
+import dynamic from 'next/dynamic'
+
+// Lazy load các components không cần thiết ngay lập tức
+const NavItems = dynamic(() => import('@/app/[locale]/(public)/nav-items'), {
+  loading: () => <div className="h-4 w-16 bg-muted animate-pulse rounded"></div>
+})
+
+const DarkModeToggle = dynamic(() => import('@/components/custom/strickmode').then(mod => ({ default: mod.DarkModeToggle })), {
+  loading: () => <div className="h-9 w-9 bg-muted animate-pulse rounded-md"></div>
+})
+
+const LanguageSwitcher = dynamic(() => import('@/components/language-switcher'), {
+  loading: () => <div className="h-9 w-[120px] bg-muted animate-pulse rounded-md"></div>
+})
 
 export default async function Layout({
   children,
