@@ -173,7 +173,8 @@ export default function OrdersCart() {
               quality={100}
               className='object-cover w-[80px] h-[80px] rounded-md'
             />
-          </div>          <div className='space-y-1'>
+          </div>          
+          <div className='space-y-1'>
             <h3 className='text-sm'>{order.dishSnapshot.name}</h3>
             <div className='text-xs font-semibold'>
               {formatCurrency(order.dishSnapshot.price)} x{' '}

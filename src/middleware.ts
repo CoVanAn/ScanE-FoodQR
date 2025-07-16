@@ -37,8 +37,12 @@ export function middleware(request: NextRequest) {
       !pathname.includes('.') &&
       pathname !== '/') {
     
-    // Redirect to Vietnamese (default) locale
-    const newUrl = new URL(`/vi${pathname}`, request.url)
+    // Redirect to Vietnamese (default) locale, preserving search params
+    const newUrl = new URL(`/vi${pathname}${request.nextUrl.search}`, request.url)
+    console.log('🔄 Locale redirect:', {
+      from: request.url,
+      to: newUrl.toString()
+    })
     return NextResponse.redirect(newUrl)
   }
   
@@ -50,6 +54,13 @@ export function middleware(request: NextRequest) {
   // pathname: /manage/dashboard or /en/manage/dashboard
   const accessToken = request.cookies.get('accessToken')?.value
   const refreshToken = request.cookies.get('refreshToken')?.value
+  
+  console.log('🔍 Middleware check:', {
+    pathname,
+    localeFreePath,
+    isPrivatePath: privatePaths.some((path) => localeFreePath.startsWith(path)),
+    hasRefreshToken: !!refreshToken
+  })
   
   // 1. Chưa đăng nhập thì không cho vào private paths
   if (privatePaths.some((path) => localeFreePath.startsWith(path)) && !refreshToken) {

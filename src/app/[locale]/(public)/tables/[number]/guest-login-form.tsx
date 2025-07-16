@@ -32,10 +32,23 @@ export default function GuestLoginForm() {
   })
 
   useEffect(() => {
+    console.log('🔍 Debug URL info:', {
+      fullURL: window.location.href,
+      searchParams: window.location.search,
+      token: token,
+      tableNumber: tableNumber,
+      allSearchParams: Object.fromEntries(searchParams.entries())
+    })
+    
     if (!token) {
-      router.push('/')
+      console.error('⚠️ No table token found in URL, redirecting to home')
+      // Tạm thời comment để debug
+      // router.push('/')
+    } else {
+      console.log('✅ Table token found:', token.substring(0, 20) + '...')
+      console.log('🏷️ Table number:', tableNumber)
     }
-  }, [token, router])    
+  }, [token, router, tableNumber, searchParams])    
   async function onSubmit(values: GuestLoginBodyType) {
     if (loginMutation.isPending) return
     try {
