@@ -9,7 +9,7 @@ import { useDishListQuery } from '@/queries/useDish'
 import { useEffect, useMemo, useState } from 'react'
 import { GuestCreateOrdersBodyType } from '@/schemaValidations/guest.schema'
 import Quantity from '../menu/quantity'
-import { useCart } from '@/lib/hooks/useCart'
+import { useCart } from '@/lib/hooks/useCartContext'
 import { DishStatus } from '@/constants/type'
 
 export default function CartPage() {

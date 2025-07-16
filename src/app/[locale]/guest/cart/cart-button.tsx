@@ -1,15 +1,20 @@
 'use client'
 import { Button } from "@/components/ui/button"
-import { useCart } from "@/lib/hooks/useCart"
+import { useCart } from "@/lib/hooks/useCartContext"
 import { ShoppingCart } from "lucide-react"
 // import { useRouter } from "next/navigation"
 import { useRouter} from '@/i18n/navigation'
+import { useEffect } from "react"
 
 
 export default function CartButton() {
   const { cartCount } = useCart()
   const router = useRouter()
   
+  useEffect(() => {
+    console.log('🛒 CartButton re-rendered, cartCount:', cartCount)
+  }, [cartCount])
+
   return (
     <Button 
       variant="outline" 
