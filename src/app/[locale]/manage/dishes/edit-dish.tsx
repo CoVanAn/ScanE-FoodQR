@@ -1,5 +1,6 @@
 'use client'
 import { Button } from '@/components/ui/button'
+import { Checkbox } from '@/components/ui/checkbox'
 import {
   Dialog,
   DialogContent,
@@ -65,7 +66,9 @@ export default function EditDish({
       price: 0,
       image: undefined,
       status: DishStatus.Unavailable,
-      categoryId: null
+      categoryId: null,
+      isFeatured: false,
+      featuredOrder: null
     }
   })
   const image = form.watch('image')
@@ -80,14 +83,16 @@ export default function EditDish({
 
   useEffect(() => {
     if (data) {
-      const { name, image, description, price, status, categoryId } = data.payload.data
+      const { name, image, description, price, status, categoryId, isFeatured, featuredOrder } = data.payload.data
       form.reset({
         name,
         image: image ?? undefined,
         description,
         price,
         status,
-        categoryId
+        categoryId,
+        isFeatured: isFeatured ?? false,
+        featuredOrder: featuredOrder ?? null
       })
     }
   }, [data, form])
@@ -310,6 +315,59 @@ export default function EditDish({
                       </div>
 
                       <FormMessage />
+                    </div>
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name='isFeatured'
+                render={({ field }) => (
+                  <FormItem>
+                    <div className='grid grid-cols-4 items-center justify-items-start gap-4'>
+                      <Label htmlFor='isFeatured'>Món ăn nổi bật</Label>
+                      <div className='col-span-3 w-full space-y-2'>
+                        <div className='flex items-center space-x-2'>
+                          <Checkbox
+                            id='isFeatured'
+                            checked={field.value}
+                            onCheckedChange={field.onChange}
+                          />
+                          <Label htmlFor='isFeatured' className='text-sm'>
+                            Hiển thị trên trang chủ
+                          </Label>
+                        </div>
+                        <FormMessage />
+                      </div>
+                    </div>
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name='featuredOrder'
+                render={({ field }) => (
+                  <FormItem>
+                    <div className='grid grid-cols-4 items-center justify-items-start gap-4'>
+                      <Label htmlFor='featuredOrder'>Thứ tự hiển thị</Label>
+                      <div className='col-span-3 w-full space-y-2'>
+                        <Input
+                          id='featuredOrder'
+                          className='w-full'
+                          {...field}
+                          type='number'
+                          placeholder='Nhập số thứ tự (tùy chọn)'
+                          onChange={(e) => {
+                            const value = e.target.value;
+                            field.onChange(value === '' ? null : Number(value));
+                          }}
+                          value={field.value ?? ''}
+                        />
+                        <p className='text-sm text-muted-foreground'>
+                          Số thứ tự hiển thị trên trang chủ (số nhỏ hơn sẽ hiển thị trước)
+                        </p>
+                        <FormMessage />
+                      </div>
                     </div>
                   </FormItem>
                 )}

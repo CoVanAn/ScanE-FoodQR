@@ -10,11 +10,15 @@ export default async function Home() {
 
   let dishList: DishListResType['data'] = []
   try {
-    const result = await dishApiRequest.list()
-    const {
-      payload: { data }
-    } = result
-    dishList = data
+    // Get featured dishes first, fallback to all dishes if no featured
+    const featuredResult = await dishApiRequest.featured()
+    if (featuredResult.payload.data.length > 0) {
+      dishList = featuredResult.payload.data
+    } else {
+      const allResult = await dishApiRequest.list()
+      // dishList = allResult.payload.data.slice(0, 6) // Limit to 6 items for 
+      dishList = allResult.payload.data // Fallback to all dishes
+    }
   } catch (error) {
     return <div>Something went wrong</div>
   }

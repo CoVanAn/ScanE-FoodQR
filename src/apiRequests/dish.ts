@@ -11,6 +11,8 @@ const dishApiRequest = {
   // Hiện tại next.js 14 mặc định fetch sẽ là { cache: 'force-cache' } nghĩa là cache (static rendering page)
   list: () =>
     http.get<DishListResType>('dishes', { next: { tags: ['dishes'] } }),
+  featured: () =>
+    http.get<DishListResType>('dishes/featured', { next: { tags: ['dishes', 'featured'] } }),
   listByCategory: (categoryId: number | null) =>
     categoryId 
       ? http.get<DishListResType>(`dishes/by-category/${categoryId}`, { next: { tags: ['dishes', `category-${categoryId}`] } })

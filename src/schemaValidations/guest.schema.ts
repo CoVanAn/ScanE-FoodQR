@@ -4,7 +4,10 @@ import z from 'zod'
 
 export const GuestLoginBody = z
   .object({
-    name: z.string().min(2).max(50),
+    name: z.string()
+      .min(2, 'Tên phải có ít nhất 2 ký tự')
+      .max(50, 'Tên không được quá 50 ký tự')
+      .regex(/^[a-zA-ZÀ-ÿĂăĐđĨĩŨũƠơàáạảãâầấậẩẫăằắặẳẵèéẹẻẽêềếệểễìíịỉĩòóọỏõôồốộổỗơờớợởỡùúụủũưừứựửữỳýỵỷỹđ\s]+$/, 'Tên chỉ được chứa chữ cái và khoảng trắng'),
     tableNumber: z.number(),
     token: z.string()
   })
