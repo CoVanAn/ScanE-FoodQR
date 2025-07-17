@@ -20,7 +20,7 @@
 - **📊 Theo dõi đơn hàng** - Cập nhật trạng thái real-time
 - **🌐 Đa ngôn ngữ** - Tiếng Việt, English, 日本語, 中文
 
-https://raw.githubusercontent.com/CoVanAn/ScanE-FoodQR/refs/heads/main/public/restaurant_map.png
+[Quét mã qr bàn ăn của nhà hàng] (https://raw.githubusercontent.com/CoVanAn/ScanE-FoodQR/refs/heads/main/public/restaurant_map.png)
 
 ### 👨‍💼 Dành cho Quản lý
 - **📈 Dashboard tổng quan** - Thống kê doanh thu, đơn hàng
