@@ -202,5 +202,7 @@ Distributed under the MIT License. See `LICENSE` for more information.
 - **Developer**: CoVanAn
 - **Project**: ScanE-FoodQR System
 
-## Tài khoản mặc định: tài khoản admin, không public
+## Tài khoản mặc định
+**Admin**: admin@order.com - 123456
+
 
