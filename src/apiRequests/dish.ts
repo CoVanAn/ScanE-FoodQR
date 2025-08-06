@@ -14,9 +14,20 @@ const dishApiRequest = {
   featured: () =>
     http.get<DishListResType>('dishes/featured', { next: { tags: ['dishes', 'featured'] } }),
   listByCategory: (categoryId: number | null) =>
-    categoryId 
+    categoryId
       ? http.get<DishListResType>(`dishes/by-category/${categoryId}`, { next: { tags: ['dishes', `category-${categoryId}`] } })
       : http.get<DishListResType>('dishes', { next: { tags: ['dishes'] } }),
+  listPaginated: (params: { page: number; limit: number; categoryId?: number }) => {
+    const searchParams = new URLSearchParams({
+      page: params.page.toString(), // "1", "2", "3"
+      limit: params.limit.toString(), // "8"
+      ...(params.categoryId && { categoryId: params.categoryId.toString() })
+    })
+    return http.get<DishListResType>(`dishes?${searchParams.toString()}`)
+    // GET /dishes?page=1&limit=8
+    // GET /dishes?page=2&limit=8  
+    // GET /dishes?page=3&limit=8
+  },
   add: (body: CreateDishBodyType) => http.post<DishResType>('dishes', body),
   getDish: (id: number) => http.get<DishResType>(`dishes/${id}`),
   updateDish: (id: number, body: UpdateDishBodyType) =>

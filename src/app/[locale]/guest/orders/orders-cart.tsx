@@ -176,12 +176,12 @@ export default function OrdersCart() {
           </div>          
           <div className='space-y-1'>
             <h3 className='text-sm'>{order.dishSnapshot.name}</h3>
-            <div className='text-xs font-semibold'>
-              {formatCurrency(order.dishSnapshot.price)} x{' '}
-              <Badge className='px-1'>{order.quantity}</Badge>
+            <div className='text-xs'>
+              {formatCurrency(order.dishSnapshot.price)} 
+              <Badge className='text-accent-foreground'>x{order.quantity}</Badge>
             </div>
           </div>
-          <div className='flex-shrink-0 ml-auto flex flex-col gap-4 justify-center items-center'>
+          <div className='flex-shrink-0 ml-auto flex flex-col gap-2 justify-center items-center '>
             <Badge variant={'outline'}>
               {getVietnameseOrderStatus(order.status)}
             </Badge>           
@@ -193,15 +193,15 @@ export default function OrdersCart() {
       ))}
       {paid.quantity !== 0 && (
         <div className='sticky bottom-0 '>
-          <div className='w-full flex space-x-4 text-xl font-semibold'>
-            <span>Đơn đã thanh toán · {paid.quantity} món</span>
+          <div className='w-full flex space-x-4 text-mobile-lg align-center justify-between'>
+            <span>Đã thanh toán x{paid.quantity}</span>
             <span>{formatCurrency(paid.price)}</span>
           </div>
         </div>
       )}
       <div className='sticky bottom-0 '>
-        <div className='w-full flex space-x-4 font-semibold'>
-          <span>Đơn chưa thanh toán · {waitingForPaying.quantity} món</span>
+        <div className='w-full flex space-x-4 align-center justify-between'>
+          <span >Chưa thanh toán x{waitingForPaying.quantity}</span>
           <span>{formatCurrency(waitingForPaying.price)}</span>
         </div>
       </div>
