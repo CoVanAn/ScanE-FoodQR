@@ -38,8 +38,8 @@ export default function OrdersCart() {
   const { waitingForPaying, paid } = useMemo(() => {
     return orders.reduce<Result>(
       (result: Result, order: any) => {
-        // Using payment field instead of order status to determine if order is paid
-        if (order.payment === PaymentStatus.Unpaid) {
+        // Chỉ tính các món chưa thanh toán và không bị từ chối
+        if (order.payment === PaymentStatus.Unpaid && order.status !== OrderStatus.Rejected) {
           return {
             ...result,
             waitingForPaying: {
@@ -136,9 +136,9 @@ export default function OrdersCart() {
       if (waitingForPaying.quantity === 0) {
         toast("Không có đơn hàng nào cần thanh toán");
         return;
-      }      // Lấy danh sách orderIds cần thanh toán - sử dụng payment status thay vì order status
+      }      // Lấy danh sách orderIds cần thanh toán - loại trừ các món bị từ chối
       const orderIds = orders
-        .filter((order: any) => order.payment === PaymentStatus.Unpaid)
+        .filter((order: any) => order.payment === PaymentStatus.Unpaid && order.status !== OrderStatus.Rejected)
         .map((order: any) => order.id);
 
       // Gọi API tạo URL thanh toán
