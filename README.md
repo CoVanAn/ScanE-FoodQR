@@ -38,6 +38,7 @@
 - **TypeScript** - Type safety và developer experience
 - **Tailwind CSS** - Utility-first CSS framework
 - **shadcn/ui** - Component library hiện đại
+- **zustand** - Quản lý trạng thái
 
 ### State Management & Data Fetching
 - **React Query** - Server state management
