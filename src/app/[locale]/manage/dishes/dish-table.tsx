@@ -61,7 +61,7 @@ import AutoPagination from '@/components/auto-pagination'
 import { DishListResType } from '@/schemaValidations/dish.schema'
 import EditDish from './edit-dish'
 import AddDish from './add-dish'
-import { useDeleteDishMutation, useDishListQuery } from '@/queries/useDish'
+import { useDeleteDishMutation, useDishInfiniteQuery } from '@/queries/useDish'
 import { useCategoryListQuery } from '@/queries/useCategory'
 import { toast } from 'sonner'
 
@@ -248,10 +248,17 @@ export default function DishTable() {
 
   const categories = categoryListQuery.data?.payload.data ?? []
 
-  // Fetch dishes with optional category filter
-  const dishListQuery = useDishListQuery(selectedCategory ? Number(selectedCategory) : null)
-  const data = dishListQuery.data?.payload.data ?? []
-  const isLoading = dishListQuery.isLoading
+  // Fetch dishes with optional category filter using infinite query
+  const {
+    data: dishPages,
+    fetchNextPage,
+    hasNextPage,
+    isFetchingNextPage,
+    isLoading
+  } = useDishInfiniteQuery(selectedCategory ? Number(selectedCategory) : null, 20) // 20 items per page
+  
+  // Flatten all pages into single array
+  const data = dishPages?.pages.flatMap(page => page.payload.data) ?? []
   
   const [sorting, setSorting] = useState<SortingState>([])
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([])
@@ -283,6 +290,13 @@ export default function DishTable() {
       pagination
     }
   })
+
+  // Load more data if we're near the end of loaded items
+  useEffect(() => {
+    if (hasNextPage && table.getState().pagination.pageIndex > Math.floor(data.length / PAGE_SIZE) - 2) {
+      fetchNextPage()
+    }
+  }, [table, hasNextPage, fetchNextPage, data.length])
 
   useEffect(() => {
     table.setPagination({
